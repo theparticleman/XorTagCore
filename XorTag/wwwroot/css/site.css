@@ -1,56 +1,74 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-for details on configuring this project to bundle and minify static web assets. */
-
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+﻿html {
+  font-family: 'Open Sans', sans-serif;
+  padding-left: 3%;
+  padding-right: 3%;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  font-size: 14px;
+.code {
+  font-family: 'Ubuntu Mono', monospace;
 }
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
+
+.nav {
+  color: white;
+  font-size: 2em;
+  padding: 0.5em;
+  background-color: darkslategray;
+  width: 95%;
+}
+
+.nav-link {
+  float: right;
+  font-size: 0.5em;
+  padding-left: 1em;
+  padding-top: 1.5em;
+}
+
+.nav-link a:link, a:visited {
+  color: white;
+  text-decoration: none;
+}
+
+.nav-link a:hover {
+  color: blue;
+  text-decoration: underline;
+}
+
+#winning {
+  font-size: 140%;
+}
+
+.stats-title {
+  font-size: 140%;
+  padding-bottom: 1em;
+}
+
+.watch {
+  padding-top: 1em;
+  display: inline-block;
+}
+
+@media only screen and (min-width: 800px){
+  .stats {
+    float: right;
+    padding-left: 2em;
+    font-size: 90%;
   }
 }
 
-.border-top {
-  border-top: 1px solid #e5e5e5;
-}
-.border-bottom {
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+@media only screen and (max-width: 800px){
+  .stats {
+    float: none;
+  }
 }
 
-button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+@media only screen and (max-width: 800px) {
+  html {
+      padding-left: 0;
+      padding-right: 0;
+  }
+  .nav-link {
+      visibility: hidden;
+  }
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
-}
 
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  line-height: 60px; /* Vertically center the text there */
-}
