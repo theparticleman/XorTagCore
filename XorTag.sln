@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XorTag", "XorTag\XorTag.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XorTag.AcceptanceTests", "XorTag.AcceptanceTests\XorTag.AcceptanceTests.csproj", "{D5FC9B52-35D5-48D8-8B4A-79C294FDF25F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XorTag.UnitTests", "XorTag.UnitTests\XorTag.UnitTests.csproj", "{6B4081AD-67FB-4975-A1FA-93FF5D372EAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{D5FC9B52-35D5-48D8-8B4A-79C294FDF25F}.Release|x64.Build.0 = Release|Any CPU
 		{D5FC9B52-35D5-48D8-8B4A-79C294FDF25F}.Release|x86.ActiveCfg = Release|Any CPU
 		{D5FC9B52-35D5-48D8-8B4A-79C294FDF25F}.Release|x86.Build.0 = Release|Any CPU
+		{6B4081AD-67FB-4975-A1FA-93FF5D372EAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B4081AD-67FB-4975-A1FA-93FF5D372EAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B4081AD-67FB-4975-A1FA-93FF5D372EAB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6B4081AD-67FB-4975-A1FA-93FF5D372EAB}.Debug|x64.Build.0 = Debug|Any CPU
+		{6B4081AD-67FB-4975-A1FA-93FF5D372EAB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6B4081AD-67FB-4975-A1FA-93FF5D372EAB}.Debug|x86.Build.0 = Debug|Any CPU
+		{6B4081AD-67FB-4975-A1FA-93FF5D372EAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B4081AD-67FB-4975-A1FA-93FF5D372EAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B4081AD-67FB-4975-A1FA-93FF5D372EAB}.Release|x64.ActiveCfg = Release|Any CPU
+		{6B4081AD-67FB-4975-A1FA-93FF5D372EAB}.Release|x64.Build.0 = Release|Any CPU
+		{6B4081AD-67FB-4975-A1FA-93FF5D372EAB}.Release|x86.ActiveCfg = Release|Any CPU
+		{6B4081AD-67FB-4975-A1FA-93FF5D372EAB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
