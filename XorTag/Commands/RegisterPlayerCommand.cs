@@ -21,7 +21,7 @@ namespace XorTag.Commands
             var startLocation = playerStartLocation.Generate();
             return new CommandResult
             {
-                Name = nameGenerator.GenerateName(),
+                Name = nameGenerator.GenerateName(new string[] { }),
                 Id = idGenerator.GenerateId(),
                 IsIt = true,
                 MapWidth = 50,

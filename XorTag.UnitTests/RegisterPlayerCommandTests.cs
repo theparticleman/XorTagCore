@@ -1,6 +1,7 @@
 using XorTag.Commands;
 using NUnit.Framework;
 using XorTag.Domain;
+using System.Collections.Generic;
 
 namespace XorTag.UnitTests
 {
@@ -15,7 +16,7 @@ namespace XorTag.UnitTests
             public void SetUp()
             {
                 GetMock<IIdGenerator>().Setup(x => x.GenerateId()).Returns(1234);
-                GetMock<INameGenerator>().Setup(x => x.GenerateName()).Returns(name);
+                GetMock<INameGenerator>().Setup(x => x.GenerateName(IsAny<IEnumerable<string>>())).Returns(name);
                 GetMock<IPlayerStartLocation>().Setup(x => x.Generate()).Returns((23, 31));
                 result = ClassUnderTest.Execute();
             }
