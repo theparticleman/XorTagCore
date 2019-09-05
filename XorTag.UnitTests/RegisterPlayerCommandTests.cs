@@ -15,7 +15,7 @@ namespace XorTag.UnitTests
             [SetUp]
             public void SetUp()
             {
-                GetMock<IIdGenerator>().Setup(x => x.GenerateId()).Returns(1234);
+                GetMock<IIdGenerator>().Setup(x => x.GenerateId(IsAny<IEnumerable<int>>())).Returns(1234);
                 GetMock<INameGenerator>().Setup(x => x.GenerateName(IsAny<IEnumerable<string>>())).Returns(name);
                 GetMock<IPlayerStartLocation>().Setup(x => x.Generate()).Returns((23, 31));
                 result = ClassUnderTest.Execute();

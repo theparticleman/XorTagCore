@@ -22,7 +22,7 @@ namespace XorTag.Commands
             return new CommandResult
             {
                 Name = nameGenerator.GenerateName(new string[] { }),
-                Id = idGenerator.GenerateId(),
+                Id = idGenerator.GenerateId(new int[] { }),
                 IsIt = true,
                 MapWidth = 50,
                 MapHeight = 30,
