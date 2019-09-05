@@ -3,7 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using XorTag.Domain;
 
-namespace XorTag.UnitTests
+namespace XorTag.UnitTests.Domain
 {
     public class NameGeneratorTests
     {
