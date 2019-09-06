@@ -21,7 +21,7 @@ namespace XorTag.AcceptanceTests
             }
 
             [Test]
-            public void It_should_suceed() => Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            public void It_should_succeed() => Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
             [Test]
             public void It_should_set_first_player_as_it() => Assert.That(response.Data.IsIt, Is.True);
@@ -31,6 +31,25 @@ namespace XorTag.AcceptanceTests
 
             [Test]
             public void It_should_assign_an_id() => Assert.That(response.Data.Id, Is.GreaterThan(0));
+        }
+
+        public class When_moving_a_player
+        {
+            private IRestResponse<ApiResult> registerResponse;
+            private IRestResponse<ApiResult> moveReponse;
+
+            [OneTimeSetUp]
+            public void SetUp()
+            {
+                var settings = new AcceptanceTestSettings();
+                var client = new RestClient(settings.BaseUrl);
+
+                registerResponse = client.Execute<ApiResult>(new RestRequest("register"));
+                moveReponse = client.Execute<ApiResult>(new RestRequest("/move/" + registerResponse.Data.Id));
+            }
+
+            [Test]
+            public void It_should_succeed() => Assert.That(moveReponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         }
     }
 }
