@@ -1,4 +1,4 @@
-namespace Tests
+namespace XorTag.AcceptanceTests
 {
     internal class AcceptanceTestSettings
     {
