@@ -11,13 +11,18 @@ namespace XorTag.UnitTests
         {
             private CommandResult result;
             private const string name = "generated-name";
+            private const int mapWidth = 40;
+            private const int mapHeight = 20;
 
-            [SetUp]
+            [OneTimeSetUp]
             public void SetUp()
             {
                 GetMock<IIdGenerator>().Setup(x => x.GenerateId(IsAny<IEnumerable<int>>())).Returns(1234);
                 GetMock<INameGenerator>().Setup(x => x.GenerateName(IsAny<IEnumerable<string>>())).Returns(name);
-                GetMock<IPlayerStartLocation>().Setup(x => x.Generate()).Returns((23, 31));
+                var randomValue = 23;
+                GetMock<IRandom>().Setup(x => x.Next(IsAny<int>())).Returns(() => randomValue++);
+                GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+                GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
                 result = ClassUnderTest.Execute();
             }
 
@@ -33,19 +38,26 @@ namespace XorTag.UnitTests
             [Test]
             public void It_should_set_map_dimensions() 
             {
-                Assert.That(result.MapWidth, Is.EqualTo(50));
-                Assert.That(result.MapHeight, Is.EqualTo(30));
+                Assert.That(result.MapWidth, Is.EqualTo(mapWidth));
+                Assert.That(result.MapHeight, Is.EqualTo(mapHeight));
             }
 
             [Test]
             public void It_should_set_player_position()
             {
                 Assert.That(result.X, Is.EqualTo(23));
-                Assert.That(result.Y, Is.EqualTo(31));
+                Assert.That(result.Y, Is.EqualTo(24));
             }
 
             [Test]
             public void It_should_return_list_of_players() => Assert.That(result.Players, Is.Not.Null);
+
+            [Test]
+            public void It_should_use_map_dimensions_to_generate_start_position()
+            {
+                GetMock<IRandom>().Verify(x => x.Next(mapWidth));
+                GetMock<IRandom>().Verify(x => x.Next(mapHeight));
+            }
         }
     }
 }

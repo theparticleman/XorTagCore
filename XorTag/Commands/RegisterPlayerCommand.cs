@@ -8,26 +8,27 @@ namespace XorTag.Commands
     {
         private readonly IIdGenerator idGenerator;
         private readonly INameGenerator nameGenerator;
-        private readonly IPlayerStartLocation playerStartLocation;
+        private readonly IMapSettings mapSettings;
+        private readonly IRandom random;
 
-        public RegisterPlayerCommand(IIdGenerator idGenerator, INameGenerator nameGenerator, IPlayerStartLocation playerStartLocation)
+        public RegisterPlayerCommand(IIdGenerator idGenerator, INameGenerator nameGenerator, IMapSettings mapSettings, IRandom random)
         {
             this.idGenerator = idGenerator;
             this.nameGenerator = nameGenerator;
-            this.playerStartLocation = playerStartLocation;
+            this.mapSettings = mapSettings;
+            this.random = random;
         }
         public CommandResult Execute()
         {
-            var startLocation = playerStartLocation.Generate();
             return new CommandResult
             {
                 Name = nameGenerator.GenerateName(new string[] { }),
                 Id = idGenerator.GenerateId(new int[] { }),
                 IsIt = true,
-                MapWidth = 50,
-                MapHeight = 30,
-                X = startLocation.x,
-                Y = startLocation.y,
+                MapWidth = mapSettings.MapWidth,
+                MapHeight = mapSettings.MapHeight,
+                X = random.Next(mapSettings.MapWidth),
+                Y = random.Next(mapSettings.MapHeight),
                 Players = new List<PlayerResult>()
             };
         }
