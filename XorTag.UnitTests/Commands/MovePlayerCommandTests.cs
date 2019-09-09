@@ -8,9 +8,11 @@ namespace XorTag.UnitTests.Commands
 {
     public class MovePlayerCommandTests
     {
-        public class When_moving_player_up : WithAnAutomocked<MovePlayerCommand>
+        public class When_moving_player : WithAnAutomocked<MovePlayerCommand>
         {
             private CommandResult result;
+            private const int mapHeight = 30;
+            private const int mapWidth = 50;
             private const int playerStartY = 12;
             private const int playerStartX = 23;
             private Player player;
@@ -21,6 +23,8 @@ namespace XorTag.UnitTests.Commands
             {
                 player = new Player { Id = 1234, X = playerStartX, Y = playerStartY };
                 allPlayers = new List<Player> { player };
+                GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+                GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
                 GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(allPlayers);
             }
 
@@ -34,6 +38,30 @@ namespace XorTag.UnitTests.Commands
                 Assert.That(result.X, Is.EqualTo(expectedX));
                 Assert.That(result.Y, Is.EqualTo(expectedY));
                 GetMock<IPlayerRepository>().Verify(x => x.UpdatePlayerPosition(It.Is<Player>(p => p.X == expectedX && p.Y == expectedY)));
+            }
+        }
+
+        public class When_moving_near_map_edges: WithAnAutomocked<MovePlayerCommand>
+        {
+            private const int mapHeight = 30;
+            private const int mapWidth = 50;
+
+            [TestCase("up", 23, 0)]
+            [TestCase("down", 23, mapHeight - 1)]
+            [TestCase("left", 0, 12)]
+            [TestCase("right", mapWidth - 1, 12)]
+            public void It_should_not_let_player_move_off_the_map(string direction, int startX, int startY)
+            {
+                var player = new Player { Id = 1234, X = startX, Y = startY };
+                var allPlayers = new List<Player> { player };
+                GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+                GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
+                GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(allPlayers);
+
+                var result = ClassUnderTest.Execute(direction, 1234);
+
+                Assert.That(result.X, Is.EqualTo(startX));
+                Assert.That(result.Y, Is.EqualTo(startY));
             }
         }
 
