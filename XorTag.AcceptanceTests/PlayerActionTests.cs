@@ -4,7 +4,7 @@ using RestSharp;
 
 namespace XorTag.AcceptanceTests
 {
-    public class ApiTests
+    public class PlayerActionTests
     {
         public class When_registering_a_new_player
         {
