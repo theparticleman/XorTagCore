@@ -58,6 +58,9 @@ namespace XorTag.UnitTests.Commands
                 GetMock<IRandom>().Verify(x => x.Next(mapWidth));
                 GetMock<IRandom>().Verify(x => x.Next(mapHeight));
             }
+
+            [Test]
+            public void It_should_save_the_new_player() => GetMock<IPlayerRepository>().Verify(x => x.Save(IsAny<Player>()));
         }
     }
 }

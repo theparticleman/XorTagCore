@@ -36,9 +36,10 @@ namespace XorTag.UnitTests.Commands
             public void It_should_save_and_return_the_new_player_position(string direction, int expectedX, int expectedY)
             {
                 result = ClassUnderTest.Execute(direction, 1234);
+
+                GetMock<IPlayerRepository>().Verify(x => x.UpdatePlayerPosition(It.Is<Player>(p => p.X == expectedX && p.Y == expectedY)));
                 Assert.That(result.X, Is.EqualTo(expectedX));
                 Assert.That(result.Y, Is.EqualTo(expectedY));
-                GetMock<IPlayerRepository>().Verify(x => x.UpdatePlayerPosition(It.Is<Player>(p => p.X == expectedX && p.Y == expectedY)));
             }
         }
 
