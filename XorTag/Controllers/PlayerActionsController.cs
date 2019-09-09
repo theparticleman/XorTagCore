@@ -7,10 +7,12 @@ namespace XorTag.Controllers
     public class PlayerActionsController: ControllerBase
     {
         private readonly RegisterPlayerCommand registerPlayerCommand;
+        private readonly MovePlayerCommand movePlayerCommand;
 
-        public PlayerActionsController(RegisterPlayerCommand registerPlayerCommand)
+        public PlayerActionsController(RegisterPlayerCommand registerPlayerCommand, MovePlayerCommand movePlayerCommand)
         {
             this.registerPlayerCommand = registerPlayerCommand;
+            this.movePlayerCommand = movePlayerCommand;
         }
 
         [Route("/register")]
@@ -22,7 +24,7 @@ namespace XorTag.Controllers
         [Route("/move{direction}/{playerId}")]
         public CommandResult Move(string direction, int playerId)
         {
-            return new CommandResult();
+            return movePlayerCommand.Execute(direction, playerId);
         }
     }
 }
