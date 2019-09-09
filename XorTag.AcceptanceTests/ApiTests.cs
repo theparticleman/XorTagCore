@@ -61,7 +61,7 @@ namespace XorTag.AcceptanceTests
             public void It_should_move_the_player_up() => Assert.That(moveReponse.Data.Y, Is.EqualTo(registerResponse.Data.Y - 1));
         }
 
-        public class When_moving_player_in_invalid_direction
+        public class When_moving_player_with_invalid_id
         {
             [Test]
             public void It_should_result_in_404()
@@ -71,8 +71,24 @@ namespace XorTag.AcceptanceTests
 
                 var moveReponse = client.Execute<ApiResult>(new RestRequest("/moveup/" + 9999));
 
-                Assert.That(moveReponse.StatusCode, Is.EqualTo(404));
+                Assert.That(moveReponse.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
             }
         }
+
+        public class When_moving_player_in_invalid_direction
+        {
+            [Test]
+            public void It_should_result_in_404()
+            {
+                var settings = new AcceptanceTestSettings();
+                var client = new RestClient(settings.BaseUrl);
+                var registerResponse = client.Execute<ApiResult>(new RestRequest("register"));
+
+                var moveReponse = client.Execute<ApiResult>(new RestRequest("/moveinvalid/" + registerResponse.Data.Id));
+                
+                Assert.That(moveReponse.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            }
+        }
+
     }
 }

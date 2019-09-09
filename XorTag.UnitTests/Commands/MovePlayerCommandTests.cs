@@ -161,5 +161,27 @@ namespace XorTag.UnitTests.Commands
             public void It_should_set_stationary_player_as_NOT_it() => GetMock<IPlayerRepository>().Verify(x => x.SavePlayerAsNotIt(2345));
         }
 
+        public class When_moving_in_invalid_direction : WithAnAutomocked<MovePlayerCommand>
+        {
+            [Test]
+            public void It_should_throw_exception()
+            {
+                var player = new Player { Id = 1234 };
+                GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(new List<Player> { player });
+                Assert.Throws<NotFoundException>(() => ClassUnderTest.Execute("invalid-direction", 1234));
+            }
+        }
+
+        public class When_moving_with_invalid_id : WithAnAutomocked<MovePlayerCommand>
+        {
+            [Test]
+            public void It_should_throw_exception()
+            {
+                var player = new Player { Id = 1234 };
+                GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(new List<Player> { player });
+                Assert.Throws<NotFoundException>(() => ClassUnderTest.Execute("up", 9999));
+            }
+        }
+
     }
 }

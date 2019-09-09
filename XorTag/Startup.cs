@@ -43,6 +43,7 @@ namespace XorTag
                 app.UseExceptionHandler("/Error");
             }
             app.UseStaticFiles();
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseMvc();
         }
     }

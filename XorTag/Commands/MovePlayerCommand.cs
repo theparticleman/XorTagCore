@@ -19,7 +19,8 @@ namespace XorTag.Commands
         public CommandResult Execute(string direction, int playerId)
         {
             var allPlayers = playerRepository.GetAllPlayers();
-            var currentPlayer = allPlayers.Single(x => x.Id == playerId);
+            var currentPlayer = allPlayers.SingleOrDefault(x => x.Id == playerId);
+            if (currentPlayer == null) throw new NotFoundException();
             AdjustPlayerPosition(currentPlayer, direction, allPlayers);
             playerRepository.UpdatePlayerPosition(currentPlayer);
             return new CommandResult
@@ -48,6 +49,8 @@ namespace XorTag.Commands
                 case "right":
                     newX += 1;
                     break;
+                default:
+                    throw new NotFoundException();
             }
             if (IsNewPositionValid(newX, newY, allPlayers))
             {
