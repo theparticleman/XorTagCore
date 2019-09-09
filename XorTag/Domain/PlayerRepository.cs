@@ -6,5 +6,7 @@ namespace XorTag.Domain
     {
         IEnumerable<Player> GetAllPlayers();
         void UpdatePlayerPosition(Player player);
+        void SavePlayerAsIt(int playerId);
+        void SavePlayerAsNotIt(int playerId);
     }
 }

@@ -42,6 +42,26 @@ namespace XorTag.UnitTests.Commands
             }
         }
 
+        public class When_moving_player_is_it : WithAnAutomocked<MovePlayerCommand>
+        {
+            private Player player;
+            private CommandResult result;
+
+            [SetUp]
+            public void SetUp()
+            {
+                player = new Player { Id = 1234, X = 0, Y = 0, IsIt = true };
+                var allPlayers = new List<Player> { player };
+                GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+                GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
+                GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(allPlayers);
+                result = ClassUnderTest.Execute("right", 1234);
+            }
+
+            [Test]
+            public void It_should_keep_player_as_it() => Assert.That(result.IsIt, Is.True);
+        }
+
         public class When_moving_near_map_edges : WithAnAutomocked<MovePlayerCommand>
         {
             [TestCase("up", 23, 0)]
@@ -72,8 +92,8 @@ namespace XorTag.UnitTests.Commands
             [OneTimeSetUp]
             public void SetUp()
             {
-                movingPlayer = new Player { Id = 1234, X = 23, Y = 12 };
-                stationaryPlayer = new Player { Id = 2345, X = 24, Y = 12 };
+                movingPlayer = new Player { Id = 1234, X = 23, Y = 12, IsIt = false };
+                stationaryPlayer = new Player { Id = 2345, X = 24, Y = 12, IsIt = false };
                 GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
                 GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
                 GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(new List<Player> { movingPlayer, stationaryPlayer });
@@ -82,6 +102,62 @@ namespace XorTag.UnitTests.Commands
 
             [Test]
             public void It_should_not_move_player() => Assert.That(result.X, Is.EqualTo(23));
+        }
+
+        public class When_moving_to_an_occupied_space_and_moving_player_is_it : WithAnAutomocked<MovePlayerCommand>
+        {
+            private Player movingPlayer;
+            private Player stationaryPlayer;
+            private CommandResult result;
+
+            [OneTimeSetUp]
+            public void SetUp()
+            {
+                movingPlayer = new Player { Id = 1234, X = 23, Y = 12, IsIt = true };
+                stationaryPlayer = new Player { Id = 2345, X = 24, Y = 12, IsIt = false };
+                GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+                GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
+                GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(new List<Player> { movingPlayer, stationaryPlayer });
+                result = ClassUnderTest.Execute("right", 1234);
+            }
+
+            [Test]
+            public void It_should_set_moving_player_as_NOT_it()
+            {
+                Assert.That(result.IsIt, Is.False);
+                GetMock<IPlayerRepository>().Verify(x => x.SavePlayerAsNotIt(1234));
+            }
+
+            [Test]
+            public void It_should_set_stationary_player_as_it() => GetMock<IPlayerRepository>().Verify(x => x.SavePlayerAsIt(2345));
+        }
+
+        public class When_moving_to_an_occupied_space_and_stationary_player_is_it : WithAnAutomocked<MovePlayerCommand>
+        {
+            private Player movingPlayer;
+            private Player stationaryPlayer;
+            private CommandResult result;
+
+            [OneTimeSetUp]
+            public void SetUp()
+            {
+                movingPlayer = new Player { Id = 1234, X = 23, Y = 12, IsIt = false };
+                stationaryPlayer = new Player { Id = 2345, X = 24, Y = 12, IsIt = true };
+                GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+                GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
+                GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(new List<Player> { movingPlayer, stationaryPlayer });
+                result = ClassUnderTest.Execute("right", 1234);
+            }
+
+            [Test]
+            public void It_should_set_moving_player_as_it()
+            {
+                Assert.That(result.IsIt, Is.True);
+                GetMock<IPlayerRepository>().Verify(x => x.SavePlayerAsIt(1234));
+            }
+
+            [Test]
+            public void It_should_set_stationary_player_as_NOT_it() => GetMock<IPlayerRepository>().Verify(x => x.SavePlayerAsNotIt(2345));
         }
 
     }

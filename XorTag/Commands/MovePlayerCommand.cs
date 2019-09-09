@@ -25,7 +25,8 @@ namespace XorTag.Commands
             return new CommandResult
             {
                 X = currentPlayer.X,
-                Y = currentPlayer.Y
+                Y = currentPlayer.Y,
+                IsIt = currentPlayer.IsIt
             };
         }
 
@@ -50,8 +51,32 @@ namespace XorTag.Commands
             }
             if (IsNewPositionValid(newX, newY, allPlayers))
             {
-                currentPlayer.X = newX;
-                currentPlayer.Y = newY;
+                var playerAtNewPosition = GetPlayerAtPosition(newX, newY, allPlayers);
+                if (playerAtNewPosition == null)
+                {
+                    currentPlayer.X = newX;
+                    currentPlayer.Y = newY;
+                }
+                else
+                {
+                    UpdateIsItStatus(currentPlayer, playerAtNewPosition);
+                }
+            }
+        }
+
+        private void UpdateIsItStatus(Player currentPlayer, Player playerAtNewPosition)
+        {
+            if (currentPlayer.IsIt)
+            {
+                currentPlayer.IsIt = false;
+                playerRepository.SavePlayerAsNotIt(currentPlayer.Id);
+                playerRepository.SavePlayerAsIt(playerAtNewPosition.Id);
+            }
+            else if (playerAtNewPosition.IsIt)
+            {
+                currentPlayer.IsIt = true;
+                playerRepository.SavePlayerAsIt(currentPlayer.Id);
+                playerRepository.SavePlayerAsNotIt(playerAtNewPosition.Id);
             }
         }
 
@@ -63,7 +88,13 @@ namespace XorTag.Commands
             {
                 return false;
             }
-            return allPlayers.Count(p => p.X == newX && p.Y == newY) == 0;
+            return true;
         }
+
+        private static Player GetPlayerAtPosition(int newX, int newY, IEnumerable<Player> allPlayers)
+        {
+            return allPlayers.FirstOrDefault(p => p.X == newX && p.Y == newY);
+        }
+
     }
 }
