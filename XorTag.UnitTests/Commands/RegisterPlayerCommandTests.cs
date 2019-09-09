@@ -62,5 +62,27 @@ namespace XorTag.UnitTests.Commands
             [Test]
             public void It_should_save_the_new_player() => GetMock<IPlayerRepository>().Verify(x => x.Save(IsAny<Player>()));
         }
+
+        public class When_registering_multiple_players :WithAnAutomocked<RegisterPlayerCommand>
+        {
+            private CommandResult firstResult;
+            private CommandResult secondResult;
+
+            [OneTimeSetUp]
+            public void SetUp()
+            {
+                var playerCount = 0;
+                GetMock<IPlayerRepository>().Setup(x => x.GetPlayerCount()).Returns(() => playerCount++);
+
+                firstResult = ClassUnderTest.Execute();
+                secondResult = ClassUnderTest.Execute();
+            }
+
+            [Test]
+            public void It_should_set_first_player_as_it() => Assert.That(firstResult.IsIt, Is.True);
+
+            [Test]
+            public void It_should_set_second_player_as_NOT_it() => Assert.That(secondResult.IsIt, Is.False);
+        }
     }
 }

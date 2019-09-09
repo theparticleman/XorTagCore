@@ -10,15 +10,27 @@ namespace XorTag.Domain
         void SavePlayerAsIt(int playerId);
         void SavePlayerAsNotIt(int playerId);
         void Save(Player player);
+        int GetPlayerCount();
+        void ClearAllPlayers();
     }
 
     public class InMemoryPlayerRepository : IPlayerRepository
     {
         private readonly List<Player> players = new List<Player>();
 
+        public void ClearAllPlayers()
+        {
+            players.Clear();
+        }
+
         public IEnumerable<Player> GetAllPlayers()
         {
             return players.ToArray();
+        }
+
+        public int GetPlayerCount()
+        {
+            return players.Count;
         }
 
         public void Save(Player player)

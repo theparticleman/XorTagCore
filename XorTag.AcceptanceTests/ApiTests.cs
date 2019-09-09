@@ -24,13 +24,35 @@ namespace XorTag.AcceptanceTests
             public void It_should_succeed() => Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
             [Test]
-            public void It_should_set_first_player_as_it() => Assert.That(response.Data.IsIt, Is.True);
-
-            [Test]
             public void It_should_assign_a_name() => Assert.That(response.Data.Name, Is.Not.Empty);
 
             [Test]
             public void It_should_assign_an_id() => Assert.That(response.Data.Id, Is.GreaterThan(0));
+        }
+
+        public class When_registering_multiple_players
+        {
+            private IRestResponse<ApiResult> firstRegistrationResponse;
+            private IRestResponse<ApiResult> secondRegistrationResponse;
+
+            [OneTimeSetUp]
+            public void SetUp()
+            {
+                var settings = new AcceptanceTestSettings();
+                var client = new RestClient(settings.BaseUrl);
+
+                var clearResponse = client.Execute(new RestRequest("admin/clearall"));
+                Assert.That(clearResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+                firstRegistrationResponse = client.Execute<ApiResult>(new RestRequest("register"));
+                secondRegistrationResponse = client.Execute<ApiResult>(new RestRequest("register"));
+            }
+
+            [Test]
+            public void It_should_set_first_player_as_it() => Assert.That(firstRegistrationResponse.Data.IsIt, Is.True);
+
+            [Test]
+            public void It_should_set_second_player_as_NOT_it() => Assert.That(secondRegistrationResponse.Data.IsIt, Is.False);
         }
 
         public class When_moving_a_player
@@ -85,7 +107,7 @@ namespace XorTag.AcceptanceTests
                 var registerResponse = client.Execute<ApiResult>(new RestRequest("register"));
 
                 var moveReponse = client.Execute<ApiResult>(new RestRequest("/moveinvalid/" + registerResponse.Data.Id));
-                
+
                 Assert.That(moveReponse.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
             }
         }

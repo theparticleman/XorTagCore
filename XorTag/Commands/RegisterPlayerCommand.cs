@@ -22,19 +22,21 @@ namespace XorTag.Commands
         }
         public CommandResult Execute()
         {
+            var playerCount = playerRepository.GetPlayerCount();
             var player = new Player
             {
                 Id = idGenerator.GenerateId(new int[] { }),
                 Name = nameGenerator.GenerateName(new string[] { }),
                 X = random.Next(mapSettings.MapWidth),
-                Y = random.Next(mapSettings.MapHeight)
+                Y = random.Next(mapSettings.MapHeight),
+                IsIt = playerCount == 0
             };
             playerRepository.Save(player);
             return new CommandResult
             {
                 Name = player.Name,
                 Id = player.Id,
-                IsIt = true,
+                IsIt = player.IsIt,
                 MapWidth = mapSettings.MapWidth,
                 MapHeight = mapSettings.MapHeight,
                 X = player.X,
