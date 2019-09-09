@@ -44,12 +44,21 @@ namespace XorTag.AcceptanceTests
                 var settings = new AcceptanceTestSettings();
                 var client = new RestClient(settings.BaseUrl);
 
-                registerResponse = client.Execute<ApiResult>(new RestRequest("register"));
-                moveReponse = client.Execute<ApiResult>(new RestRequest("/move/" + registerResponse.Data.Id));
+                do //make sure that the player we've registered isn't at the top of the map
+                {
+                    registerResponse = client.Execute<ApiResult>(new RestRequest("register"));
+                } while (registerResponse.Data.Y <= 0);
+                moveReponse = client.Execute<ApiResult>(new RestRequest("/moveup/" + registerResponse.Data.Id));
             }
 
             [Test]
             public void It_should_succeed() => Assert.That(moveReponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+            [Test]
+            public void It_should_not_use_a_player_at_the_top_of_the_map() => Assert.That(registerResponse.Data.Y, Is.GreaterThan(0));
+
+            [Test]
+            public void It_should_move_the_player_up() => Assert.That(moveReponse.Data.Y, Is.EqualTo(registerResponse.Data.Y - 1));
         }
     }
 }

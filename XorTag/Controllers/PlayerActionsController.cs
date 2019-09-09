@@ -18,5 +18,11 @@ namespace XorTag.Controllers
         {
             return registerPlayerCommand.Execute();
         }
+
+        [Route("/move{direction}/{playerId}")]
+        public CommandResult Move(string direction, int playerId)
+        {
+            return new CommandResult();
+        }
     }
 }
