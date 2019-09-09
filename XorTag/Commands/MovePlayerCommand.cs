@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using XorTag.Domain;
 
@@ -19,7 +20,7 @@ namespace XorTag.Commands
         {
             var allPlayers = playerRepository.GetAllPlayers();
             var currentPlayer = allPlayers.Single(x => x.Id == playerId);
-            AdjustPlayerPosition(currentPlayer, direction);
+            AdjustPlayerPosition(currentPlayer, direction, allPlayers);
             playerRepository.UpdatePlayerPosition(currentPlayer);
             return new CommandResult
             {
@@ -28,27 +29,41 @@ namespace XorTag.Commands
             };
         }
 
-        private void AdjustPlayerPosition(Player currentPlayer, string direction)
+        private void AdjustPlayerPosition(Player currentPlayer, string direction, IEnumerable<Player> allPlayers)
         {
+            int newX = currentPlayer.X;
+            int newY = currentPlayer.Y;
             switch (direction)
             {
                 case "up":
-                    currentPlayer.Y -= 1;
+                    newY -= 1;
                     break;
                 case "down":
-                    currentPlayer.Y += 1;
+                    newY += 1;
                     break;
                 case "left":
-                    currentPlayer.X -= 1;
+                    newX -= 1;
                     break;
                 case "right":
-                    currentPlayer.X += 1;
+                    newX += 1;
                     break;
             }
-            if (currentPlayer.Y < 0) currentPlayer.Y = 0;
-            if (currentPlayer.Y >= mapSettings.MapHeight) currentPlayer.Y = mapSettings.MapHeight - 1;
-            if (currentPlayer.X < 0) currentPlayer.X = 0;
-            if (currentPlayer.X >= mapSettings.MapWidth) currentPlayer.X = mapSettings.MapWidth - 1;
+            if (IsNewPositionValid(newX, newY, allPlayers))
+            {
+                currentPlayer.X = newX;
+                currentPlayer.Y = newY;
+            }
+        }
+
+        private bool IsNewPositionValid(int newX, int newY, IEnumerable<Player> allPlayers)
+        {
+            if (
+                newY < 0 || newY >= mapSettings.MapHeight ||
+                newX < 0 || newX >= mapSettings.MapWidth)
+            {
+                return false;
+            }
+            return allPlayers.Count(p => p.X == newX && p.Y == newY) == 0;
         }
     }
 }

@@ -8,11 +8,12 @@ namespace XorTag.UnitTests.Commands
 {
     public class MovePlayerCommandTests
     {
+        private const int mapHeight = 30;
+        private const int mapWidth = 50;
+
         public class When_moving_player : WithAnAutomocked<MovePlayerCommand>
         {
             private CommandResult result;
-            private const int mapHeight = 30;
-            private const int mapWidth = 50;
             private const int playerStartY = 12;
             private const int playerStartX = 23;
             private Player player;
@@ -41,11 +42,8 @@ namespace XorTag.UnitTests.Commands
             }
         }
 
-        public class When_moving_near_map_edges: WithAnAutomocked<MovePlayerCommand>
+        public class When_moving_near_map_edges : WithAnAutomocked<MovePlayerCommand>
         {
-            private const int mapHeight = 30;
-            private const int mapWidth = 50;
-
             [TestCase("up", 23, 0)]
             [TestCase("down", 23, mapHeight - 1)]
             [TestCase("left", 0, 12)]
@@ -63,6 +61,27 @@ namespace XorTag.UnitTests.Commands
                 Assert.That(result.X, Is.EqualTo(startX));
                 Assert.That(result.Y, Is.EqualTo(startY));
             }
+        }
+
+        public class When_moving_to_an_occupied_space_and_neither_player_is_it : WithAnAutomocked<MovePlayerCommand>
+        {
+            private Player movingPlayer;
+            private Player stationaryPlayer;
+            private CommandResult result;
+
+            [OneTimeSetUp]
+            public void SetUp()
+            {
+                movingPlayer = new Player { Id = 1234, X = 23, Y = 12 };
+                stationaryPlayer = new Player { Id = 2345, X = 24, Y = 12 };
+                GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+                GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
+                GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(new List<Player> { movingPlayer, stationaryPlayer });
+                result = ClassUnderTest.Execute("right", 1234);
+            }
+
+            [Test]
+            public void It_should_not_move_player() => Assert.That(result.X, Is.EqualTo(23));
         }
 
     }
