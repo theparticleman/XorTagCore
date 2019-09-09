@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Moq;
 using NUnit.Framework;
 using XorTag.Commands;
 using XorTag.Domain;
@@ -10,23 +11,31 @@ namespace XorTag.UnitTests.Commands
         public class When_moving_player_up : WithAnAutomocked<MovePlayerCommand>
         {
             private CommandResult result;
-            private int playerStartY = 12;
+            private const int playerStartY = 12;
+            private const int playerStartX = 23;
             private Player player;
             private List<Player> allPlayers;
 
-            [OneTimeSetUp]
+            [SetUp]
             public void SetUp()
             {
-                player = new Player { Id = 1234, Y = playerStartY };
+                player = new Player { Id = 1234, X = playerStartX, Y = playerStartY };
                 allPlayers = new List<Player> { player };
                 GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(allPlayers);
-                result = ClassUnderTest.Execute("up", 1234);
             }
 
-            [Test]
-            public void It_should_move_the_player_up() => Assert.That(result.Y, Is.EqualTo(playerStartY - 1));
+            [TestCase("up", playerStartX, playerStartY - 1)]
+            [TestCase("down", playerStartX, playerStartY + 1)]
+            [TestCase("left", playerStartX - 1, playerStartY)]
+            [TestCase("right", playerStartX + 1, playerStartY)]
+            public void It_should_save_and_return_the_new_player_position(string direction, int expectedX, int expectedY)
+            {
+                result = ClassUnderTest.Execute(direction, 1234);
+                Assert.That(result.X, Is.EqualTo(expectedX));
+                Assert.That(result.Y, Is.EqualTo(expectedY));
+                GetMock<IPlayerRepository>().Verify(x => x.UpdatePlayerPosition(It.Is<Player>(p => p.X == expectedX && p.Y == expectedY)));
+            }
         }
-
 
     }
 }
