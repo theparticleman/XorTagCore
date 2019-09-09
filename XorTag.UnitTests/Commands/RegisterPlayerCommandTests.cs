@@ -3,7 +3,7 @@ using NUnit.Framework;
 using XorTag.Domain;
 using System.Collections.Generic;
 
-namespace XorTag.UnitTests
+namespace XorTag.UnitTests.Commands
 {
     public class RegisterPlayerCommandTests
     {
