@@ -15,6 +15,7 @@ namespace XorTag.AcceptanceTests
             var settings = new AcceptanceTestSettings();
             var client = new RestClient(settings.BaseUrl);
 
+            client.Execute(new RestRequest("admin/clearall"));
             registerResponse = client.Execute<ApiResponse>(new RestRequest("register"));
 
             statsResponse = client.Execute<StatsResponse>(new RestRequest("stats"));
