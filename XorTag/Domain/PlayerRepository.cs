@@ -48,12 +48,14 @@ namespace XorTag.Domain
 
         public void SavePlayerAsIt(int playerId)
         {
-            throw new System.NotImplementedException();
+            var playerToUpdate = players.FirstOrDefault(x => x.Id == playerId);
+            if (playerToUpdate != null) playerToUpdate.IsIt = true;
         }
 
         public void SavePlayerAsNotIt(int playerId)
         {
-            throw new System.NotImplementedException();
+            var playerToUpdate = players.FirstOrDefault(x => x.Id == playerId);
+            if (playerToUpdate != null) playerToUpdate.IsIt = false;
         }
 
         public void UpdatePlayerPosition(Player player)

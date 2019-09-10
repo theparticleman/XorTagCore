@@ -60,5 +60,43 @@ namespace XorTag.UnitTests.Domain
                 Assert.That(retrievedPlayer.Y, Is.EqualTo(42));
             }
         }
+
+        public class When_saving_player_as_it
+        {
+            private Player player = new Player { Id = 1234, Name = "player-name", X = 32, Y = 13, IsIt = false };
+
+            [Test]
+            public void It_should_persist_is_it_state()
+            {
+                var classUnderTest = new InMemoryPlayerRepository();
+                classUnderTest.Save(player);
+
+                classUnderTest.SavePlayerAsIt(player.Id);
+
+                var allPlayers = classUnderTest.GetAllPlayers();
+                var updatedPlayer = allPlayers.Single(x => x.Id == player.Id);
+
+                Assert.That(updatedPlayer.IsIt, Is.True);
+            }
+        }
+
+        public class When_saving_player_as_NOT_it
+        {
+            private Player player = new Player { Id = 1234, Name = "player-name", X = 32, Y = 13, IsIt = true };
+
+            [Test]
+            public void It_should_persist_is_it_state()
+            {
+                var classUnderTest = new InMemoryPlayerRepository();
+                classUnderTest.Save(player);
+
+                classUnderTest.SavePlayerAsNotIt(player.Id);
+
+                var allPlayers = classUnderTest.GetAllPlayers();
+                var updatedPlayer = allPlayers.Single(x => x.Id == player.Id);
+
+                Assert.That(updatedPlayer.IsIt, Is.False);
+            }
+        }
     }
 }
