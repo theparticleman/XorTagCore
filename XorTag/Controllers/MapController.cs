@@ -20,7 +20,6 @@ namespace XorTag.Controllers
         [ResponseCache(Duration = 1)]
         public IActionResult Get()
         {
-            logger.LogWarning("Generating new image");
             return File(mapImageBuilder.BuildImage(), "image/png");
         }
     }

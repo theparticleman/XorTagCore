@@ -109,6 +109,13 @@ Here is what the different fields on that JSON object mean:
 <h3>Sample Code</h3>
 <p>You can get some sample code on how to do all this <a href="https://bitbucket.org/theparticleman/xortagsample">here</a>. If you just want to download the code (as a zip file) you can do that <a href="https://bitbucket.org/theparticleman/xortagsample/get/master.zip">here</a>.</p>
 
+<script>
+    setInterval(function () {
+        console.log("updating map");
+        var imageElement = document.getElementById("map");
+        imageElement.src = "map?" + new Date().getTime();
+    }, 1000);
+</script>
 
 </body>
 </html>
