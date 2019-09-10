@@ -8,7 +8,7 @@ namespace XorTag.AcceptanceTests
     {
         public class When_registering_a_new_player
         {
-            private IRestResponse<ApiResult> response;
+            private IRestResponse<ApiResponse> response;
 
             [OneTimeSetUp]
             public void SetUp()
@@ -17,7 +17,7 @@ namespace XorTag.AcceptanceTests
                 var client = new RestClient(settings.BaseUrl);
                 var request = new RestRequest("register");
 
-                response = client.Execute<ApiResult>(request);
+                response = client.Execute<ApiResponse>(request);
             }
 
             [Test]
@@ -32,8 +32,8 @@ namespace XorTag.AcceptanceTests
 
         public class When_registering_multiple_players
         {
-            private IRestResponse<ApiResult> firstRegistrationResponse;
-            private IRestResponse<ApiResult> secondRegistrationResponse;
+            private IRestResponse<ApiResponse> firstRegistrationResponse;
+            private IRestResponse<ApiResponse> secondRegistrationResponse;
 
             [OneTimeSetUp]
             public void SetUp()
@@ -44,8 +44,8 @@ namespace XorTag.AcceptanceTests
                 var clearResponse = client.Execute(new RestRequest("admin/clearall"));
                 Assert.That(clearResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
-                firstRegistrationResponse = client.Execute<ApiResult>(new RestRequest("register"));
-                secondRegistrationResponse = client.Execute<ApiResult>(new RestRequest("register"));
+                firstRegistrationResponse = client.Execute<ApiResponse>(new RestRequest("register"));
+                secondRegistrationResponse = client.Execute<ApiResponse>(new RestRequest("register"));
             }
 
             [Test]
@@ -57,8 +57,8 @@ namespace XorTag.AcceptanceTests
 
         public class When_moving_a_player
         {
-            private IRestResponse<ApiResult> registerResponse;
-            private IRestResponse<ApiResult> moveReponse;
+            private IRestResponse<ApiResponse> registerResponse;
+            private IRestResponse<ApiResponse> moveReponse;
 
             [OneTimeSetUp]
             public void SetUp()
@@ -68,9 +68,9 @@ namespace XorTag.AcceptanceTests
 
                 do //make sure that the player we've registered isn't at the top of the map
                 {
-                    registerResponse = client.Execute<ApiResult>(new RestRequest("register"));
+                    registerResponse = client.Execute<ApiResponse>(new RestRequest("register"));
                 } while (registerResponse.Data.Y <= 0);
-                moveReponse = client.Execute<ApiResult>(new RestRequest("/moveup/" + registerResponse.Data.Id));
+                moveReponse = client.Execute<ApiResponse>(new RestRequest("/moveup/" + registerResponse.Data.Id));
             }
 
             [Test]
@@ -91,7 +91,7 @@ namespace XorTag.AcceptanceTests
                 var settings = new AcceptanceTestSettings();
                 var client = new RestClient(settings.BaseUrl);
 
-                var moveReponse = client.Execute<ApiResult>(new RestRequest("/moveup/" + 9999));
+                var moveReponse = client.Execute<ApiResponse>(new RestRequest("/moveup/" + 9999));
 
                 Assert.That(moveReponse.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
             }
@@ -104,9 +104,9 @@ namespace XorTag.AcceptanceTests
             {
                 var settings = new AcceptanceTestSettings();
                 var client = new RestClient(settings.BaseUrl);
-                var registerResponse = client.Execute<ApiResult>(new RestRequest("register"));
+                var registerResponse = client.Execute<ApiResponse>(new RestRequest("register"));
 
-                var moveReponse = client.Execute<ApiResult>(new RestRequest("/moveinvalid/" + registerResponse.Data.Id));
+                var moveReponse = client.Execute<ApiResponse>(new RestRequest("/moveinvalid/" + registerResponse.Data.Id));
 
                 Assert.That(moveReponse.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
             }

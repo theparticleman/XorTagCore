@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace XorTag.AcceptanceTests
 {
-    public class ApiResult
+    public class ApiResponse
     {
         public bool IsIt { get; set; }
         public int MapHeight { get; set; }
