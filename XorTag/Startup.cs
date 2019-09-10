@@ -30,6 +30,8 @@ namespace XorTag
                 ts.FromCallingAssembly().AddClasses().AsMatchingInterface().AsSelf().WithTransientLifetime();
             });
             services.AddSingleton<IPlayerRepository, InMemoryPlayerRepository>();
+            services.AddMemoryCache();
+            services.AddResponseCaching();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -42,6 +44,18 @@ namespace XorTag
             {
                 app.UseExceptionHandler("/Error");
             }
+
+            app.Use(async (ctx, next) =>
+            {
+                ctx.Request.GetTypedHeaders().CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                {
+                    Public = true,
+                    MaxAge = TimeSpan.FromSeconds(60)
+                };
+                await next();
+            });
+
+            app.UseResponseCaching();
             app.UseStaticFiles();
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseMvc();
