@@ -21,7 +21,7 @@
 <a name="watch"></a>
 <div class="watch">
     <div style="float: left;">
-        <div id="winning">Gandalf is winning</div>
+        <div id="winning">No one is playing</div>
         <p>
             <img id="map" src="map" width=500 height=300 alt="" />
         </p>
@@ -29,10 +29,8 @@
 
     <div class="stats" >
         <div class="stats-title">Status</div>
-        <div>Thorin is it!</div>
-        <ol>
-            <li>Gandalf 10s not it</li>
-            <li>Darth Vader 150s not it</li>
+        <div id="isIt">No one is it</div>
+        <ol id="playerList">
         </ol>
     </div>
 </div>
@@ -111,10 +109,48 @@ Here is what the different fields on that JSON object mean:
 
 <script>
     setInterval(function () {
-        console.log("updating map");
         var imageElement = document.getElementById("map");
         imageElement.src = "map?" + new Date().getTime();
     }, 1000);
+    setInterval(function() {
+        var isItElement = document.getElementById("isIt").firstChild;
+        var winningElement = document.getElementById("winning").firstChild;
+        var playerListElement = document.getElementById("playerList");
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function(data)
+        {
+            var stats = JSON.parse(data.target.response);
+
+            if (stats.isItPlayerName) {
+                isItElement.textContent = stats.isItPlayerName + " is it!";
+            } else {
+                isItElement.textContent = "No one is it";
+            }
+
+            var winningText;
+            if (stats.winningPlayerName) {
+                winningText = stats.winningPlayerName + " is winning!";
+            } else if (stats.isItPlayerName) {
+                winningText = "No one else is playing yet";
+            } else {
+                winningText = "No one is playing";
+            }
+            winningElement.textContent = winningText;
+
+            while (playerListElement.firstChild)
+            {
+                playerListElement.removeChild(playerListElement.firstChild);
+            }
+            stats.players.forEach(function(item, index){
+                var listItem = document.createElement("li");
+                listItem.innerText = item.name;
+                playerListElement.appendChild(listItem);
+            });
+
+        };
+        xhr.open("GET", "/stats");
+        xhr.send();
+    }, 300);
 </script>
 
 </body>
