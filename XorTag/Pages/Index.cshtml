@@ -73,8 +73,8 @@ Here is what the different fields on that JSON object mean:
     <b>mapWidth:</b> How many tiles high the map is.<br />
     <b>name:</b> Your player's name. Everyone's got to have a name.<br />
     <b>players:</b> An array of other players that are close enough for you to see. Each player has an X position, a Y position and whether or not they are it. If they aren't it and you are, get 'em! If they are it, run for it.<br />
-    <b>x:</b> The X (horizontal) position of your player. The left side of the map is position 0. The right side is <span class="code">mapWidth - 1</span>.<br />
-    <b>y:</b> The Y (vertical) position of your player. The top side of the map is position 0. The bottom side is <span class="code">mapHeight - 1</span>.<br />
+    <b>x:</b> The X (horizontal) position of your player. The left-most column on the map is position 0. The right-most column is <span class="code">mapWidth - 1</span>.<br />
+    <b>y:</b> The Y (vertical) position of your player. The top row of the map is position 0. The bottom row is <span class="code">mapHeight - 1</span>.<br />
 </p>
 
 <h3>Registering</h3>
@@ -82,7 +82,7 @@ Here is what the different fields on that JSON object mean:
 <p><span class="code">http://xortag.apphb.com/register</span></p>
 
 <h3>Moving</h3>
-<p>Once you are registered you can start moving your player around. This is the heart of tag. If you are it, try to move towards other players and tag them. If you move to the same space where another player is, that counts as a tag. If you aren't it, try to run away from the player who is.</p>
+<p>Once you are registered you can start moving your player around. This is the heart of tag. If you are "it", try to move towards other players and tag them. If you move to the same space where another player is, that counts as a tag. If you aren't "it", try to run away from the player who is.</p>
 <p>You can move in any of four directions by making HTTP requests to any of the four urls:</p>
 <p>
     <span class="code">http://xortag.apphb.com/moveup/</span>{your player id}<br />
@@ -102,7 +102,7 @@ Here is what the different fields on that JSON object mean:
 
 <h3>Not So Fast There</h3>
 <p>To make sure the server doesn't explode as players submit requests as fast as possible, each player can perform an action at most once per second. Moving and looking both count as actions. Registering does not count as an action. Any actions performed more frequently than <b>once per second</b> will be ignored. In this case an error (specifically a 503 error) will be returned instead of a JSON object. So your code will either need to not make requests too often or handle those errors.</p>
-<p>Also, if your player totally inactive for 5 minutes it will be removed from the game.</p>
+<p>Also, if your player is totally inactive for 5 minutes it will be removed from the game.</p>
 
 <h3>Sample Code</h3>
 <p>You can get some sample code on how to do all this <a href="https://bitbucket.org/theparticleman/xortagsample">here</a>. If you just want to download the code (as a zip file) you can do that <a href="https://bitbucket.org/theparticleman/xortagsample/get/master.zip">here</a>.</p>
