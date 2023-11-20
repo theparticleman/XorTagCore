@@ -1,25 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using XorTag;
 
-namespace XorTag
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services
+    .Scan(scan => scan.FromAssemblyOf<Program>()
+    .AddClasses()
+    .AsSelf()
+    .AsImplementedInterfaces());
+
+// Add services to the container.
+builder.Services.AddRazorPages();
+builder.Services.AddControllers();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateWebHostBuilder(args).Build().Run();
-        }
-
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .UseUrls("http://*:5000");
-    }
+    app.UseExceptionHandler("/Error");
 }
+
+app.UseStaticFiles();
+
+app.UseRouting();
+app.UseMiddleware<ExceptionMiddleware>();
+
+app.MapControllers();
+app.MapRazorPages();
+
+app.Run("http://*:10101");

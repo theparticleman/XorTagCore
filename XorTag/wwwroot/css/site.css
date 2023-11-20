@@ -1,4 +1,4 @@
-﻿html {
+html {
   font-family: 'Open Sans', sans-serif;
   padding-left: 3%;
   padding-right: 3%;
@@ -24,7 +24,7 @@
 }
 
 .nav-link a:link, a:visited {
-  color: white;
+  color: purple;
   text-decoration: none;
 }
 

@@ -6,16 +6,9 @@ using XorTag.Domain;
 
 namespace XorTag
 {
-    public class ExceptionMiddleware
+    public class ExceptionMiddleware : IMiddleware
     {
-        private readonly RequestDelegate next;
-
-        public ExceptionMiddleware(RequestDelegate next)
-        {
-            this.next = next;
-        }
-
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             try
             {
