@@ -1,4 +1,5 @@
 using XorTag;
+using XorTag.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,10 @@ builder.Services
     .AddClasses()
     .AsSelf()
     .AsImplementedInterfaces());
+
+builder.Services.AddSingleton<IPlayerRepository, InMemoryPlayerRepository>();
+builder.Services.AddSingleton<IIdGenerator, IdGenerator>();
+builder.Services.AddSingleton<INameGenerator, NameGenerator>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
