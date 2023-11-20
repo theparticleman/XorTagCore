@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
 using ImageMagick;
 
 namespace XorTag.Domain
@@ -26,7 +23,14 @@ namespace XorTag.Domain
 
         public byte[] BuildImage()
         {
-            using (var image = new MagickImage(MagickColors.Gray, ImageWidth, ImageHeight))
+            var settings = new MagickReadSettings
+            {
+                Font = "AovelSansRounded-rdDL.ttf",
+                BackgroundColor = MagickColors.Gray,
+                Height = ImageHeight,
+                Width = ImageWidth,
+            };
+            using (var image = new MagickImage("map.png", settings))
             {
                 DrawGridLines(image);
                 DrawPlayers(image);
@@ -40,15 +44,16 @@ namespace XorTag.Domain
         private void DrawGridLines(MagickImage image)
         {
             var drawables = new Drawables();
-            for (int x = 0; x < mapWidth; x++)
+            drawables.FillColor(MagickColors.DarkGray);
+            for (int x = 0; x <= mapWidth; x++)
             {
-                drawables.FillColor(MagickColors.DarkGray);
-                drawables.Line(x * cellWidth, 0, x * cellWidth, ImageHeight);
+                int lineX = Math.Min(x * cellWidth, ImageWidth - 1);
+                drawables.Line(lineX, 0, lineX, ImageHeight);
             }
-            for (int y = 0; y < mapHeight; y++)
+            for (int y = 0; y <= mapHeight; y++)
             {
-                drawables.FillColor(MagickColors.DarkGray);
-                drawables.Line(0, y * cellHeight, ImageWidth, y * cellHeight);
+                int lineY = Math.Min(y * cellHeight, ImageHeight - 1);
+                drawables.Line(0, lineY, ImageWidth, lineY);
             }
             drawables.Draw(image);
         }
