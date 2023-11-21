@@ -22,7 +22,7 @@ namespace XorTag.UnitTests.Commands
             [SetUp]
             public void SetUp()
             {
-                player = new Player { Id = 1234, X = playerStartX, Y = playerStartY };
+                player = new Player { Id = 1234, X = playerStartX, Y = playerStartY, Name = "player name" };
                 allPlayers = new List<Player> { player };
                 GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
                 GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
@@ -42,6 +42,8 @@ namespace XorTag.UnitTests.Commands
                 GetMock<IPlayerRepository>().Verify(x => x.UpdatePlayerPosition(It.Is<Player>(p => p.X == expectedX && p.Y == expectedY)));
                 Assert.That(result.X, Is.EqualTo(expectedX));
                 Assert.That(result.Y, Is.EqualTo(expectedY));
+                Assert.That(result.Id, Is.EqualTo(1234));
+                Assert.That(result.Name, Is.EqualTo(player.Name));
             }
         }
 

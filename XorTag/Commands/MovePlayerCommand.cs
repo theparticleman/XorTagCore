@@ -29,6 +29,7 @@ namespace XorTag.Commands
                 Y = currentPlayer.Y,
                 IsIt = currentPlayer.IsIt,
                 Id = playerId,
+                Name = currentPlayer.Name,
             };
         }
 
