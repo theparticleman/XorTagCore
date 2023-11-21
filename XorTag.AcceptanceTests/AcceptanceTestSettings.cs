@@ -6,6 +6,6 @@ namespace XorTag.AcceptanceTests
         {
         }
         
-        public string BaseUrl => "http://localhost:5000/";
+        public string BaseUrl => "http://localhost:10101/";
     }
 }
