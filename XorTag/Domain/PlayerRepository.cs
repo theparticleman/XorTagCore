@@ -1,69 +1,65 @@
-using System.Collections.Generic;
-using System.Linq;
+namespace XorTag.Domain;
 
-namespace XorTag.Domain
+public interface IPlayerRepository
 {
-    public interface IPlayerRepository
+    IEnumerable<Player> GetAllPlayers();
+    void UpdatePlayerPosition(Player player);
+    void SavePlayerAsIt(int playerId);
+    void SavePlayerAsNotIt(int playerId);
+    void Save(Player player);
+    int GetPlayerCount();
+    void ClearAllPlayers();
+}
+
+public class InMemoryPlayerRepository : IPlayerRepository
+{
+    private readonly List<Player> players = new List<Player>();
+
+    public void ClearAllPlayers()
     {
-        IEnumerable<Player> GetAllPlayers();
-        void UpdatePlayerPosition(Player player);
-        void SavePlayerAsIt(int playerId);
-        void SavePlayerAsNotIt(int playerId);
-        void Save(Player player);
-        int GetPlayerCount();
-        void ClearAllPlayers();
+        players.Clear();
     }
 
-    public class InMemoryPlayerRepository : IPlayerRepository
+    public IEnumerable<Player> GetAllPlayers()
     {
-        private readonly List<Player> players = new List<Player>();
+        return players.ToArray();
+    }
 
-        public void ClearAllPlayers()
-        {
-            players.Clear();
-        }
+    public int GetPlayerCount()
+    {
+        return players.Count;
+    }
 
-        public IEnumerable<Player> GetAllPlayers()
+    public void Save(Player player)
+    {
+        var playerCopy = new Player
         {
-            return players.ToArray();
-        }
+            Id = player.Id,
+            Name = player.Name,
+            X = player.X,
+            Y = player.Y,
+            IsIt = player.IsIt
+        };
+        players.Add(playerCopy);
+    }
 
-        public int GetPlayerCount()
-        {
-            return players.Count;
-        }
+    public void SavePlayerAsIt(int playerId)
+    {
+        var playerToUpdate = players.FirstOrDefault(x => x.Id == playerId);
+        if (playerToUpdate != null) playerToUpdate.IsIt = true;
+    }
 
-        public void Save(Player player)
-        {
-            var playerCopy = new Player
-            {
-                Id = player.Id,
-                Name = player.Name,
-                X = player.X,
-                Y = player.Y,
-                IsIt = player.IsIt
-            };
-            players.Add(playerCopy);
-        }
+    public void SavePlayerAsNotIt(int playerId)
+    {
+        var playerToUpdate = players.FirstOrDefault(x => x.Id == playerId);
+        if (playerToUpdate != null) playerToUpdate.IsIt = false;
+    }
 
-        public void SavePlayerAsIt(int playerId)
-        {
-            var playerToUpdate = players.FirstOrDefault(x => x.Id == playerId);
-            if (playerToUpdate != null) playerToUpdate.IsIt = true;
-        }
-
-        public void SavePlayerAsNotIt(int playerId)
-        {
-            var playerToUpdate = players.FirstOrDefault(x => x.Id == playerId);
-            if (playerToUpdate != null) playerToUpdate.IsIt = false;
-        }
-
-        public void UpdatePlayerPosition(Player player)
-        {
-            var playerToUpdate = players.FirstOrDefault(x => x.Id == player.Id);
-            if (playerToUpdate == null) return;
-            playerToUpdate.X = player.X;
-            playerToUpdate.Y = player.Y;
-        }
+    public void UpdatePlayerPosition(Player player)
+    {
+        var playerToUpdate = players.FirstOrDefault(x => x.Id == player.Id);
+        if (playerToUpdate == null) return;
+        playerToUpdate.X = player.X;
+        playerToUpdate.Y = player.Y;
     }
 }

@@ -1,8 +1,5 @@
-using System;
+namespace XorTag.Domain;
 
-namespace XorTag.Domain
+public class NotFoundException : Exception
 {
-    public class NotFoundException : Exception
-    {
-    }
 }

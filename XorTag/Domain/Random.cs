@@ -1,17 +1,16 @@
-namespace XorTag.Domain
+namespace XorTag.Domain;
+
+public interface IRandom
 {
-    public interface IRandom
-    {
-        int Next(int max);
-    }
+    int Next(int max);
+}
 
-    public class Random : IRandom
-    {
-        private static readonly System.Random rand = new System.Random();
+public class Random : IRandom
+{
+    private static readonly System.Random rand = new System.Random();
 
-        public int Next(int max)
-        {
-            return rand.Next(max);
-        }
+    public int Next(int max)
+    {
+        return rand.Next(max);
     }
 }
