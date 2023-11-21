@@ -1,30 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
 using XorTag.Commands;
 
-namespace XorTag.Controllers
+namespace XorTag.Controllers;
+
+[ApiController]
+public class PlayerActionsController: ControllerBase
 {
-    [ApiController]
-    public class PlayerActionsController: ControllerBase
+    private readonly RegisterPlayerCommand registerPlayerCommand;
+    private readonly MovePlayerCommand movePlayerCommand;
+
+    public PlayerActionsController(RegisterPlayerCommand registerPlayerCommand, MovePlayerCommand movePlayerCommand)
     {
-        private readonly RegisterPlayerCommand registerPlayerCommand;
-        private readonly MovePlayerCommand movePlayerCommand;
+        this.registerPlayerCommand = registerPlayerCommand;
+        this.movePlayerCommand = movePlayerCommand;
+    }
 
-        public PlayerActionsController(RegisterPlayerCommand registerPlayerCommand, MovePlayerCommand movePlayerCommand)
-        {
-            this.registerPlayerCommand = registerPlayerCommand;
-            this.movePlayerCommand = movePlayerCommand;
-        }
+    [Route("/register")]
+    public CommandResult Register()
+    {
+        return registerPlayerCommand.Execute();
+    }
 
-        [Route("/register")]
-        public CommandResult Register()
-        {
-            return registerPlayerCommand.Execute();
-        }
-
-        [Route("/move{direction}/{playerId}")]
-        public CommandResult Move(string direction, int playerId)
-        {
-            return movePlayerCommand.Execute(direction, playerId);
-        }
+    [Route("/move{direction}/{playerId}")]
+    public CommandResult Move(string direction, int playerId)
+    {
+        return movePlayerCommand.Execute(direction, playerId);
     }
 }
