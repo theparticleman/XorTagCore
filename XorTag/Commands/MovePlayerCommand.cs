@@ -27,7 +27,8 @@ namespace XorTag.Commands
             {
                 X = currentPlayer.X,
                 Y = currentPlayer.Y,
-                IsIt = currentPlayer.IsIt
+                IsIt = currentPlayer.IsIt,
+                Id = playerId,
             };
         }
 
@@ -35,7 +36,7 @@ namespace XorTag.Commands
         {
             int newX = currentPlayer.X;
             int newY = currentPlayer.Y;
-            switch (direction)
+            switch (direction.ToLower())
             {
                 case "up":
                     newY -= 1;
