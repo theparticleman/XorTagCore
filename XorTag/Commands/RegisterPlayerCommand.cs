@@ -20,14 +20,14 @@ public class RegisterPlayerCommand
     }
     public CommandResult Execute()
     {
-        var playerCount = playerRepository.GetPlayerCount();
+        var existingPlayers = playerRepository.GetAllPlayers();
         var player = new Player
         {
-            Id = idGenerator.GenerateId(new int[] { }),
+            Id = idGenerator.GenerateId(existingPlayers.Select(x => x.Id)),
             Name = nameGenerator.GenerateName(new string[] { }),
             X = random.Next(mapSettings.MapWidth),
             Y = random.Next(mapSettings.MapHeight),
-            IsIt = playerCount == 0
+            IsIt = existingPlayers.Count() == 0
         };
         playerRepository.Save(player);
         return new CommandResult
