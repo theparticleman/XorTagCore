@@ -8,11 +8,13 @@ public class PlayerActionsController: ControllerBase
 {
     private readonly RegisterPlayerCommand registerPlayerCommand;
     private readonly MovePlayerCommand movePlayerCommand;
+    private readonly LookCommand lookCommand;
 
-    public PlayerActionsController(RegisterPlayerCommand registerPlayerCommand, MovePlayerCommand movePlayerCommand)
+    public PlayerActionsController(RegisterPlayerCommand registerPlayerCommand, MovePlayerCommand movePlayerCommand, LookCommand lookCommand)
     {
         this.registerPlayerCommand = registerPlayerCommand;
         this.movePlayerCommand = movePlayerCommand;
+        this.lookCommand = lookCommand;
     }
 
     [Route("/register")]
@@ -25,5 +27,11 @@ public class PlayerActionsController: ControllerBase
     public CommandResult Move(string direction, int playerId)
     {
         return movePlayerCommand.Execute(direction, playerId);
+    }
+
+    [Route("/look/{playerId}")]
+    public CommandResult Look(int playerId)
+    {
+        return lookCommand.Execute(playerId);
     }
 }

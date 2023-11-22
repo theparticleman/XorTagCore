@@ -108,4 +108,30 @@ public class PlayerActionTests
         }
     }
 
+    public class When_having_a_player_look
+    {
+        private IRestResponse<ApiResponse> registerResponse;
+        private IRestResponse<ApiResponse> lookResponse;
+
+        [OneTimeSetUp]
+        public void SetUp()
+        {
+            var settings = new AcceptanceTestSettings();
+            var client = new RestClient(settings.BaseUrl);
+            registerResponse = client.Execute<ApiResponse>(new RestRequest("register"));
+            Assert.That(registerResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            lookResponse = client.Execute<ApiResponse>(new RestRequest("/look/" + registerResponse.Data.Id));
+        }
+
+        [Test]
+        public void It_should_succeed() => Assert.That(lookResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+        [Test]
+        public void It_should_not_move_the_player()
+        {
+            Assert.That(registerResponse.Data.X, Is.EqualTo(lookResponse.Data.X));
+            Assert.That(registerResponse.Data.Y, Is.EqualTo(lookResponse.Data.Y));
+        }
+    }
+
 }
