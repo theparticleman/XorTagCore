@@ -1,11 +1,10 @@
-namespace XorTag.AcceptanceTests
+namespace XorTag.AcceptanceTests;
+
+internal class AcceptanceTestSettings
 {
-    internal class AcceptanceTestSettings
+    public AcceptanceTestSettings()
     {
-        public AcceptanceTestSettings()
-        {
-        }
-        
-        public string BaseUrl => "http://localhost:10101/";
     }
+
+    public string BaseUrl => "http://localhost:10101/";
 }
