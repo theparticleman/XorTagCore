@@ -19,4 +19,21 @@ public class AdminController : ControllerBase
     {
         playerRepository.ClearAllPlayers();
     }
+
+    [Route("duplicate-ids-exist")]
+    public bool HasDuplicateIds()
+    {
+        var groupedById = playerRepository.GetAllPlayers().GroupBy(x => x.Id);
+        var groupsWithMoreThanOne = groupedById.Where(x => x.Count() > 1);
+        return groupsWithMoreThanOne.Any();
+    }
+
+    [Route("duplicate-names-exist")]
+    public bool HasDuplicateNames()
+    {
+        var groupedByName = playerRepository.GetAllPlayers().GroupBy(x => x.Name);
+        var groupsWithhMoreThanOne = groupedByName.Where(x => x.Count() > 1);
+        return groupsWithhMoreThanOne.Any();
+    }
+
 }
