@@ -29,11 +29,12 @@ public class AdminController : ControllerBase
     }
 
     [Route("duplicate-names-exist")]
-    public bool HasDuplicateNames()
+    public IEnumerable<string> HasDuplicateNames()
     {
         var groupedByName = playerRepository.GetAllPlayers().GroupBy(x => x.Name);
-        var groupsWithhMoreThanOne = groupedByName.Where(x => x.Count() > 1);
-        return groupsWithhMoreThanOne.Any();
+        var groupsWithMoreThanOne = groupedByName.Where(x => x.Count() > 1);
+        var duplicateNames = groupsWithMoreThanOne.Select(x => x.Key);
+        return duplicateNames;
     }
 
 }
