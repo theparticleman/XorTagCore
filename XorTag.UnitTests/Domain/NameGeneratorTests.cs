@@ -42,5 +42,16 @@ namespace XorTag.UnitTests.Domain
             [Test]
             public void It_should_generate_the_only_unused_name() => Assert.That(generatedName, Is.EqualTo(expectedName));
         }
+
+        public class When_generating_name_and_all_names_are_already_used
+        {
+            [Test]
+            public void It_should_not_go_into_an_infinite_loop()
+            {
+                var classUnderTest = new NameGenerator();
+                var generatedName = classUnderTest.GenerateName(NameGenerator.AllNames);
+                Assert.That(generatedName, Is.Not.Null);
+            }
+        }
     }
 }

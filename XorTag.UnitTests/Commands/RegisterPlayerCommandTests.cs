@@ -15,12 +15,13 @@ namespace XorTag.UnitTests.Commands
             private const int mapHeight = 20;
             private static readonly List<Player> existingPlayers = new List<Player>
             {
-                new Player { Id = 1 },
-                new Player { Id = 2 },
+                new Player { Id = 1, Name = "Name 1" },
+                new Player { Id = 2, Name = "Name 2" },
             };
 
             private CommandResult result;
             private IEnumerable<int> capturedIdList = null;
+            private IEnumerable<string> capturedNameList = null;
 
             [OneTimeSetUp]
             public void SetUp()
@@ -28,7 +29,9 @@ namespace XorTag.UnitTests.Commands
                 GetMock<IIdGenerator>().Setup(x => x.GenerateId(IsAny<IEnumerable<int>>()))
                     .Callback<IEnumerable<int>>(x => capturedIdList = x)
                     .Returns(1234);
-                GetMock<INameGenerator>().Setup(x => x.GenerateName(IsAny<IEnumerable<string>>())).Returns(name);
+                GetMock<INameGenerator>().Setup(x => x.GenerateName(IsAny<IEnumerable<string>>()))
+                    .Callback<IEnumerable<string>>(x => capturedNameList = x)
+                    .Returns(name);
                 var randomValue = 23;
                 GetMock<IRandom>().Setup(x => x.Next(IsAny<int>())).Returns(() => randomValue++);
                 GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
@@ -78,6 +81,13 @@ namespace XorTag.UnitTests.Commands
             {
                 var existingPlayerIds = existingPlayers.Select(x => x.Id);
                 Assert.That(capturedIdList, Is.EquivalentTo(existingPlayerIds));
+            }
+
+            [Test]
+            public void It_should_use_the_existing_player_names_when_generating_new_player_name()
+            {
+                var existingPlayerNames = existingPlayers.Select(x => x.Name);
+                Assert.That(capturedNameList, Is.EquivalentTo(existingPlayerNames));
             }
         }
 

@@ -13,12 +13,13 @@ public class NameGenerator : INameGenerator
 
     public string GenerateName(IEnumerable<string> existingNames)
     {
-        string generatedName;
-        var existingNamesArray = existingNames.ToHashSet();
-        do
+        var randomizedNames = allNames.OrderBy(x => rand.Next(allNames.Count)).ToList();
+        string generatedName = randomizedNames.First();
+        foreach (var name in randomizedNames)
         {
-            generatedName = allNames[rand.Next(allNames.Count)];
-        } while (existingNamesArray.Contains(generatedName));
+            generatedName = name;
+            if (!existingNames.Contains(generatedName)) break;
+        }
         return generatedName;
     }
 }

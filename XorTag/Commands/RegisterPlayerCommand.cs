@@ -24,7 +24,7 @@ public class RegisterPlayerCommand
         var player = new Player
         {
             Id = idGenerator.GenerateId(existingPlayers.Select(x => x.Id)),
-            Name = nameGenerator.GenerateName(new string[] { }),
+            Name = nameGenerator.GenerateName(existingPlayers.Select(x => x.Name)),
             X = random.Next(mapSettings.MapWidth),
             Y = random.Next(mapSettings.MapHeight),
             IsIt = existingPlayers.Count() == 0
