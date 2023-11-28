@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace XorTag.UnitTests.Domain;
 
 public class InMemoryPlayerRepositoryTests
@@ -91,6 +93,68 @@ public class InMemoryPlayerRepositoryTests
             var updatedPlayer = allPlayers.Single(x => x.Id == player.Id);
 
             Assert.That(updatedPlayer.IsIt, Is.False);
+        }
+    }
+
+    public class When_updating_last_active_time
+    {
+        [Test]
+        public void It_should_update()
+        {
+            var classUnderTest = new InMemoryPlayerRepository();
+            var player = new Player
+            {
+                Id = 1234,
+            };
+            classUnderTest.Save(player);
+            var initialLastActiveTime = classUnderTest.GetLastActiveTime(player.Id);
+
+            classUnderTest.UpdateLastActiveTime(player.Id);
+
+            var updatedLastActiveTime = classUnderTest.GetLastActiveTime(player.Id);
+
+            Assert.That(updatedLastActiveTime, Is.Not.EqualTo(initialLastActiveTime));
+        }
+
+        [Test]
+        public void It_should_only_update_when_called()
+        {
+            var classUnderTest = new InMemoryPlayerRepository();
+            var player = new Player
+            {
+                Id = 1234,
+            };
+            classUnderTest.Save(player);
+            classUnderTest.UpdateLastActiveTime(player.Id);
+
+            var firstLastActiveTime = classUnderTest.GetLastActiveTime(player.Id);
+
+            Thread.Sleep(50);
+
+            var secondLastActiveTime = classUnderTest.GetLastActiveTime(player.Id);
+
+            Assert.That(firstLastActiveTime, Is.EqualTo(secondLastActiveTime));
+        }
+    }
+
+    public class When_removing_player : WithAnAutomocked<InMemoryPlayerRepository>
+    {
+        [Test]
+        public void It_should_remove_the_player()
+        {
+            var player = new Player
+            {
+                Id = 1234,
+            };
+
+            ClassUnderTest.Save(player);
+            var allPlayers = ClassUnderTest.GetAllPlayers();
+            Assert.That(allPlayers, Has.Count.EqualTo(1));
+
+            ClassUnderTest.RemovePlayer(player.Id);
+
+            allPlayers = ClassUnderTest.GetAllPlayers();
+            Assert.That(allPlayers, Has.Count.EqualTo(0));
         }
     }
 }

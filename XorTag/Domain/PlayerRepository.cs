@@ -13,7 +13,8 @@ public interface IPlayerRepository
 
 public class InMemoryPlayerRepository : IPlayerRepository
 {
-    private readonly List<Player> players = new List<Player>();
+    private readonly List<Player> players = [];
+    private readonly Dictionary<int, DateTimeOffset> lastActiveLookup = [];
 
     public void ClearAllPlayers()
     {
@@ -61,5 +62,23 @@ public class InMemoryPlayerRepository : IPlayerRepository
         if (playerToUpdate == null) return;
         playerToUpdate.X = player.X;
         playerToUpdate.Y = player.Y;
+    }
+
+    public DateTimeOffset GetLastActiveTime(int playerId)
+    {
+        if (lastActiveLookup.TryGetValue(playerId, out var lastActiveTime)) return lastActiveTime;
+        return DateTimeOffset.MinValue;
+    }
+
+    public void UpdateLastActiveTime(int playerId)
+    {
+        lastActiveLookup[playerId] = DateTimeOffset.Now;
+    }
+
+    public void RemovePlayer(int playerId)
+    {
+        var index = players.FindIndex(x => x.Id == playerId);
+        if (index <= -1) return;
+        players.RemoveAt(index);
     }
 }
