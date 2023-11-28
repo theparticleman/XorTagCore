@@ -42,8 +42,8 @@ public class CommandResultBuilderTests : WithAnAutomocked<CommandResultBuilder>
       Id = 1236,
     };
 
-    GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
-    GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
+    GetMock<ISettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+    GetMock<ISettings>().Setup(x => x.MapHeight).Returns(mapHeight);
 
     var allPlayers = new List<Player> { player, playerInRange };
 

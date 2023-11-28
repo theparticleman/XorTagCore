@@ -2,10 +2,10 @@ using XorTag.Domain;
 
 namespace XorTag.Commands;
 
-public class MovePlayerCommand(IPlayerRepository playerRepository, IMapSettings mapSettings, ICommandResultBuilder commandResultBuilder)
+public class MovePlayerCommand(IPlayerRepository playerRepository, ISettings settings, ICommandResultBuilder commandResultBuilder)
 {
     private readonly IPlayerRepository playerRepository = playerRepository;
-    private readonly IMapSettings mapSettings = mapSettings;
+    private readonly ISettings settings = settings;
     private readonly ICommandResultBuilder commandResultBuilder = commandResultBuilder;
 
     public CommandResult Execute(string direction, int playerId)
@@ -73,8 +73,8 @@ public class MovePlayerCommand(IPlayerRepository playerRepository, IMapSettings 
     private bool IsNewPositionValid(int newX, int newY, IEnumerable<Player> allPlayers)
     {
         if (
-            newY < 0 || newY >= mapSettings.MapHeight ||
-            newX < 0 || newX >= mapSettings.MapWidth)
+            newY < 0 || newY >= settings.MapHeight ||
+            newX < 0 || newX >= settings.MapWidth)
         {
             return false;
         }

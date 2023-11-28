@@ -33,8 +33,8 @@ public class RegisterPlayerCommandTests
                 .Returns(generatedName);
             var randomValue = 23;
             GetMock<IRandom>().Setup(x => x.Next(IsAny<int>())).Returns(() => randomValue++);
-            GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
-            GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
+            GetMock<ISettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+            GetMock<ISettings>().Setup(x => x.MapHeight).Returns(mapHeight);
             GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(existingPlayers);
             GetMock<ICommandResultBuilder>()
                 .Setup(x => x.Build(IsAny<Player>(), existingPlayers))
@@ -90,12 +90,12 @@ public class RegisterPlayerCommandTests
         {
             var idGeneratorMock = new Mock<IIdGenerator>();
             var nameGeneratorMock = new Mock<INameGenerator>();
-            var mapSettingsMock = new Mock<IMapSettings>();
+            var settingsMock = new Mock<ISettings>();
             var randomMock = new Mock<IRandom>();
             var playerRepository = new InMemoryPlayerRepository();
-            var commandResultBuilder = new CommandResultBuilder(mapSettingsMock.Object);
+            var commandResultBuilder = new CommandResultBuilder(settingsMock.Object);
 
-            var classUnderTest = new RegisterPlayerCommand(idGeneratorMock.Object, nameGeneratorMock.Object, mapSettingsMock.Object, randomMock.Object, playerRepository, commandResultBuilder);
+            var classUnderTest = new RegisterPlayerCommand(idGeneratorMock.Object, nameGeneratorMock.Object, settingsMock.Object, randomMock.Object, playerRepository, commandResultBuilder);
 
             firstResult = classUnderTest.Execute();
             secondResult = classUnderTest.Execute();

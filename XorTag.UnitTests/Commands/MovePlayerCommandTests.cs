@@ -22,8 +22,8 @@ public class MovePlayerCommandTests
         {
             player = new Player { Id = 1234, X = playerStartX, Y = playerStartY, Name = "player name" };
             allPlayers = new List<Player> { player };
-            GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
-            GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
+            GetMock<ISettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+            GetMock<ISettings>().Setup(x => x.MapHeight).Returns(mapHeight);
             GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(allPlayers);
             GetMock<ICommandResultBuilder>()
                 .Setup(x => x.Build(It.IsAny<Player>(), It.IsAny<List<Player>>()))
@@ -61,8 +61,8 @@ public class MovePlayerCommandTests
         {
             player = new Player { Id = 1234, X = 0, Y = 0, IsIt = true };
             var allPlayers = new List<Player> { player };
-            GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
-            GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
+            GetMock<ISettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+            GetMock<ISettings>().Setup(x => x.MapHeight).Returns(mapHeight);
             GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(allPlayers);
             GetMock<ICommandResultBuilder>()
                 .Setup(x => x.Build(IsAny<Player>(), allPlayers))
@@ -90,8 +90,8 @@ public class MovePlayerCommandTests
             var allPlayers = new List<Player> { player };
             var builtCommandResult = new CommandResult();
             Player capturedPlayer = null;
-            GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
-            GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
+            GetMock<ISettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+            GetMock<ISettings>().Setup(x => x.MapHeight).Returns(mapHeight);
             GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(allPlayers);
             GetMock<ICommandResultBuilder>()
                 .Setup(x => x.Build(IsAny<Player>(), IsAny<List<Player>>()))
@@ -118,8 +118,8 @@ public class MovePlayerCommandTests
         {
             movingPlayer = new Player { Id = 1234, X = 23, Y = 12, IsIt = false };
             stationaryPlayer = new Player { Id = 2345, X = 24, Y = 12, IsIt = false };
-            GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
-            GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
+            GetMock<ISettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+            GetMock<ISettings>().Setup(x => x.MapHeight).Returns(mapHeight);
             GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(new List<Player> { movingPlayer, stationaryPlayer });
             result = ClassUnderTest.Execute("right", 1234);
         }
@@ -143,8 +143,8 @@ public class MovePlayerCommandTests
         {
             movingPlayer = new Player { Id = 1234, X = 23, Y = 12, IsIt = true };
             stationaryPlayer = new Player { Id = 2345, X = 24, Y = 12, IsIt = false };
-            GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
-            GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
+            GetMock<ISettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+            GetMock<ISettings>().Setup(x => x.MapHeight).Returns(mapHeight);
             var allPlayers = new List<Player> { movingPlayer, stationaryPlayer };
             GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(allPlayers);
             GetMock<ICommandResultBuilder>()
@@ -179,8 +179,8 @@ public class MovePlayerCommandTests
         {
             movingPlayer = new Player { Id = 1234, X = 23, Y = 12, IsIt = false };
             stationaryPlayer = new Player { Id = 2345, X = 24, Y = 12, IsIt = true };
-            GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
-            GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
+            GetMock<ISettings>().Setup(x => x.MapWidth).Returns(mapWidth);
+            GetMock<ISettings>().Setup(x => x.MapHeight).Returns(mapHeight);
             var allPlayers = new List<Player> { movingPlayer, stationaryPlayer };
             GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(allPlayers);
             GetMock<ICommandResultBuilder>()

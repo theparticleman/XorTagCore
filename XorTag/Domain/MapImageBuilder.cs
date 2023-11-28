@@ -12,11 +12,11 @@ public class MapImageBuilder
     private int cellWidth;
     private int cellHeight;
 
-    public MapImageBuilder(IPlayerRepository playerRepository, IMapSettings mapSettings)
+    public MapImageBuilder(IPlayerRepository playerRepository, ISettings settings)
     {
         this.playerRepository = playerRepository;
-        mapWidth = mapSettings.MapWidth;
-        mapHeight = mapSettings.MapHeight;
+        mapWidth = settings.MapWidth;
+        mapHeight = settings.MapHeight;
         cellWidth = ImageWidth / mapWidth;
         cellHeight = ImageHeight / mapHeight;
     }

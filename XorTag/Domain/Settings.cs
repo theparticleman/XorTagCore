@@ -1,12 +1,12 @@
 namespace XorTag.Domain;
 
-public interface IMapSettings
+public interface ISettings
 {
     int MapWidth { get; }
     int MapHeight { get; }
 }
 
-public class MapSettings : IMapSettings
+public class Settings : ISettings
 {
     public int MapWidth => 50;
     public int MapHeight => 30;

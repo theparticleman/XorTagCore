@@ -21,7 +21,7 @@ namespace XorTag.UnitTests.Domain
             [OneTimeSetUp]
             public void SetUp()
             {
-                var settings = new MapSettings();
+                var settings = new Settings();
                 playerRepository = new Mock<IPlayerRepository>();
                 players = new List<Player>{
                     new Player{ Name = "Gimli", X = 0, Y = 0, IsIt = false},

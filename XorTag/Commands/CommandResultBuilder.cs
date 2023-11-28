@@ -7,10 +7,10 @@ public interface ICommandResultBuilder
   CommandResult Build(Player player, List<Player> allPlayers);
 }
 
-public class CommandResultBuilder(IMapSettings mapSettings) : ICommandResultBuilder
+public class CommandResultBuilder(ISettings settings) : ICommandResultBuilder
 {
   public const int LookRadius = 5;
-  private readonly IMapSettings mapSettings = mapSettings;
+  private readonly ISettings settings = settings;
 
   public CommandResult Build(Player player, List<Player> allPlayers)
   {
@@ -21,8 +21,8 @@ public class CommandResultBuilder(IMapSettings mapSettings) : ICommandResultBuil
       Id = player.Id,
       Name = player.Name,
       IsIt = player.IsIt,
-      MapWidth = mapSettings.MapWidth,
-      MapHeight = mapSettings.MapHeight,
+      MapWidth = settings.MapWidth,
+      MapHeight = settings.MapHeight,
       Players = allPlayers
         .Where(p => p.Id != player.Id)
         .Where(p => Math.Abs(p.X - player.X) < LookRadius)

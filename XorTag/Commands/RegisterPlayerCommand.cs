@@ -5,14 +5,14 @@ namespace XorTag.Commands;
 public class RegisterPlayerCommand(
     IIdGenerator idGenerator,
     INameGenerator nameGenerator,
-    IMapSettings mapSettings,
+    ISettings settings,
     IRandom random,
     IPlayerRepository playerRepository,
     ICommandResultBuilder commandResultBuilder)
 {
     private readonly IIdGenerator idGenerator = idGenerator;
     private readonly INameGenerator nameGenerator = nameGenerator;
-    private readonly IMapSettings mapSettings = mapSettings;
+    private readonly ISettings settings = settings;
     private readonly IRandom random = random;
     private readonly IPlayerRepository playerRepository = playerRepository;
     private readonly ICommandResultBuilder commandResultBuilder = commandResultBuilder;
@@ -24,8 +24,8 @@ public class RegisterPlayerCommand(
         {
             Id = idGenerator.GenerateId(existingPlayers.Select(x => x.Id)),
             Name = nameGenerator.GenerateName(existingPlayers.Select(x => x.Name)),
-            X = random.Next(mapSettings.MapWidth),
-            Y = random.Next(mapSettings.MapHeight),
+            X = random.Next(settings.MapWidth),
+            Y = random.Next(settings.MapHeight),
             IsIt = existingPlayers.Count() == 0,
         };
         playerRepository.Save(player);
