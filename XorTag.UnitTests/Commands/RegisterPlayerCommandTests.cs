@@ -6,9 +6,10 @@ public class RegisterPlayerCommandTests
 {
     public class When_registering_a_new_player : WithAnAutomocked<RegisterPlayerCommand>
     {
-        private const string name = "generated-name";
+        private const string generatedName = "generated-name";
         private const int mapWidth = 40;
         private const int mapHeight = 20;
+        const int generatedId = 1234;
         private static readonly List<Player> existingPlayers = new List<Player>
             {
                 new Player { Id = 1, Name = "Name 1" },
@@ -18,49 +19,41 @@ public class RegisterPlayerCommandTests
         private CommandResult result;
         private IEnumerable<int> capturedIdList = null;
         private IEnumerable<string> capturedNameList = null;
+        CommandResult builtCommandResult = new();
+        Player capturedPlayer;
 
         [OneTimeSetUp]
         public void SetUp()
         {
             GetMock<IIdGenerator>().Setup(x => x.GenerateId(IsAny<IEnumerable<int>>()))
                 .Callback<IEnumerable<int>>(x => capturedIdList = x)
-                .Returns(1234);
+                .Returns(generatedId);
             GetMock<INameGenerator>().Setup(x => x.GenerateName(IsAny<IEnumerable<string>>()))
                 .Callback<IEnumerable<string>>(x => capturedNameList = x)
-                .Returns(name);
+                .Returns(generatedName);
             var randomValue = 23;
             GetMock<IRandom>().Setup(x => x.Next(IsAny<int>())).Returns(() => randomValue++);
             GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(mapWidth);
             GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(mapHeight);
             GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(existingPlayers);
+            GetMock<ICommandResultBuilder>()
+                .Setup(x => x.Build(IsAny<Player>(), existingPlayers))
+                .Callback<Player, List<Player>>((p, _) => capturedPlayer = p)
+                .Returns(builtCommandResult);
             result = ClassUnderTest.Execute();
         }
 
         [Test]
-        public void It_should_generate_a_new_id() => Assert.That(result.Id, Is.EqualTo(1234));
+        public void It_should_generate_a_new_id() => Assert.That(capturedPlayer.Id, Is.EqualTo(generatedId));
 
         [Test]
-        public void It_should_generate_a_name() => Assert.That(result.Name, Is.EqualTo(name));
+        public void It_should_generate_a_name() => Assert.That(capturedPlayer.Name, Is.EqualTo(generatedName));
 
         [Test]
-        public void It_should_make_the_player_NOT_it() => Assert.That(result.IsIt, Is.False);
+        public void It_should_make_the_player_NOT_it() => Assert.That(capturedPlayer.IsIt, Is.False);
 
         [Test]
-        public void It_should_set_map_dimensions()
-        {
-            Assert.That(result.MapWidth, Is.EqualTo(mapWidth));
-            Assert.That(result.MapHeight, Is.EqualTo(mapHeight));
-        }
-
-        [Test]
-        public void It_should_set_player_position()
-        {
-            Assert.That(result.X, Is.EqualTo(23));
-            Assert.That(result.Y, Is.EqualTo(24));
-        }
-
-        [Test]
-        public void It_should_return_list_of_players() => Assert.That(result.Players, Is.Not.Null);
+        public void It_should_return_the_result_from_the_builder() => Assert.That(result, Is.EqualTo(builtCommandResult));
 
         [Test]
         public void It_should_use_map_dimensions_to_generate_start_position()
@@ -100,8 +93,9 @@ public class RegisterPlayerCommandTests
             var mapSettingsMock = new Mock<IMapSettings>();
             var randomMock = new Mock<IRandom>();
             var playerRepository = new InMemoryPlayerRepository();
+            var commandResultBuilder = new CommandResultBuilder(mapSettingsMock.Object);
 
-            var classUnderTest = new RegisterPlayerCommand(idGeneratorMock.Object, nameGeneratorMock.Object, mapSettingsMock.Object, randomMock.Object, playerRepository);
+            var classUnderTest = new RegisterPlayerCommand(idGeneratorMock.Object, nameGeneratorMock.Object, mapSettingsMock.Object, randomMock.Object, playerRepository, commandResultBuilder);
 
             firstResult = classUnderTest.Execute();
             secondResult = classUnderTest.Execute();

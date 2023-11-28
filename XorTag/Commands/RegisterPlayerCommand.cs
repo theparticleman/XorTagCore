@@ -2,22 +2,21 @@ using XorTag.Domain;
 
 namespace XorTag.Commands;
 
-public class RegisterPlayerCommand
+public class RegisterPlayerCommand(
+    IIdGenerator idGenerator,
+    INameGenerator nameGenerator,
+    IMapSettings mapSettings,
+    IRandom random,
+    IPlayerRepository playerRepository,
+    ICommandResultBuilder commandResultBuilder)
 {
-    private readonly IIdGenerator idGenerator;
-    private readonly INameGenerator nameGenerator;
-    private readonly IMapSettings mapSettings;
-    private readonly IRandom random;
-    private readonly IPlayerRepository playerRepository;
+    private readonly IIdGenerator idGenerator = idGenerator;
+    private readonly INameGenerator nameGenerator = nameGenerator;
+    private readonly IMapSettings mapSettings = mapSettings;
+    private readonly IRandom random = random;
+    private readonly IPlayerRepository playerRepository = playerRepository;
+    private readonly ICommandResultBuilder commandResultBuilder = commandResultBuilder;
 
-    public RegisterPlayerCommand(IIdGenerator idGenerator, INameGenerator nameGenerator, IMapSettings mapSettings, IRandom random, IPlayerRepository playerRepository)
-    {
-        this.idGenerator = idGenerator;
-        this.nameGenerator = nameGenerator;
-        this.mapSettings = mapSettings;
-        this.random = random;
-        this.playerRepository = playerRepository;
-    }
     public CommandResult Execute()
     {
         var existingPlayers = playerRepository.GetAllPlayers();
@@ -27,19 +26,9 @@ public class RegisterPlayerCommand
             Name = nameGenerator.GenerateName(existingPlayers.Select(x => x.Name)),
             X = random.Next(mapSettings.MapWidth),
             Y = random.Next(mapSettings.MapHeight),
-            IsIt = existingPlayers.Count() == 0
+            IsIt = existingPlayers.Count() == 0,
         };
         playerRepository.Save(player);
-        return new CommandResult
-        {
-            Name = player.Name,
-            Id = player.Id,
-            IsIt = player.IsIt,
-            MapWidth = mapSettings.MapWidth,
-            MapHeight = mapSettings.MapHeight,
-            X = player.X,
-            Y = player.Y,
-            Players = new List<PlayerResult>()
-        };
+        return commandResultBuilder.Build(player, existingPlayers.ToList());
     }
 }
