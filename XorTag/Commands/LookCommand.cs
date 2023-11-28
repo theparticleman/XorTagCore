@@ -2,10 +2,9 @@ using XorTag.Domain;
 
 namespace XorTag.Commands;
 
-public class LookCommand(IPlayerRepository playerRepository, IMapSettings mapSettings, ICommandResultBuilder commandResultBuilder)
+public class LookCommand(IPlayerRepository playerRepository, ICommandResultBuilder commandResultBuilder)
 {
   private readonly IPlayerRepository playerRepository = playerRepository;
-  private readonly IMapSettings mapSettings = mapSettings;
   private readonly ICommandResultBuilder commandResultBuilder = commandResultBuilder;
 
   public CommandResult Execute(int playerId)

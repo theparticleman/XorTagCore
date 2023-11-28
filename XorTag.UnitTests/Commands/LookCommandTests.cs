@@ -16,7 +16,6 @@ public class LookCommandTests
       Name = "Name 1",
     };
     readonly CommandResult builtCommandResult = new();
-    Player capturedPlayer;
 
     [OneTimeSetUp]
     public void SetUp()
