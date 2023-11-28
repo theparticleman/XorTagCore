@@ -33,4 +33,4 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.MapControllers();
 app.MapRazorPages();
 
-app.Run("http://*:10101");
+app.Run();
