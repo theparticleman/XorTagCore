@@ -41,4 +41,17 @@ public class LookCommandTests
       });
     }
   }
+
+  public class When_executing_look_command_with_invalid_player_id : WithAnAutomocked<LookCommand>
+  {
+    [Test]
+    public void It_should_throw_not_found_exception()
+    {
+      var invalidPlayerId = -1;
+      var existingPlayers = new List<Player> { new() { Id = 1 }, new() { Id = 2 } };
+      GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(existingPlayers);
+      
+      Assert.Throws<NotFoundException>(() => ClassUnderTest.Execute(invalidPlayerId));
+    }
+  }
 }
