@@ -29,6 +29,6 @@ public class RegisterPlayerCommand(
             IsIt = existingPlayers.Count() == 0,
         };
         playerRepository.Save(player);
-        return commandResultBuilder.Build(player, existingPlayers.ToList());
+        return commandResultBuilder.Build(player, existingPlayers);
     }
 }

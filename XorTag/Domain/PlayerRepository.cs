@@ -2,7 +2,7 @@ namespace XorTag.Domain;
 
 public interface IPlayerRepository
 {
-    IEnumerable<Player> GetAllPlayers();
+    List<Player> GetAllPlayers();
     void UpdatePlayerPosition(Player player);
     void SavePlayerAsIt(int playerId);
     void SavePlayerAsNotIt(int playerId);
@@ -20,9 +20,9 @@ public class InMemoryPlayerRepository : IPlayerRepository
         players.Clear();
     }
 
-    public IEnumerable<Player> GetAllPlayers()
+    public List<Player> GetAllPlayers()
     {
-        return players.ToArray();
+        return players.ToList();
     }
 
     public int GetPlayerCount()

@@ -12,6 +12,6 @@ public class LookCommand(IPlayerRepository playerRepository, ICommandResultBuild
     var allPlayers = playerRepository.GetAllPlayers();
     var currentPlayer = allPlayers.SingleOrDefault(x => x.Id == playerId);
     if (currentPlayer == null) throw new NotFoundException();
-    return commandResultBuilder.Build(currentPlayer, allPlayers.ToList());
+    return commandResultBuilder.Build(currentPlayer, allPlayers);
   }
 }
