@@ -15,31 +15,22 @@ public class LookCommandTests
       IsIt = true,
       Name = "Name 1",
     };
+    readonly CommandResult builtCommandResult = new();
+    Player capturedPlayer;
 
     [OneTimeSetUp]
     public void SetUp()
     {
-      GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(new List<Player> { player });
-      GetMock<IMapSettings>().Setup(x => x.MapWidth).Returns(50);
-      GetMock<IMapSettings>().Setup(x => x.MapHeight).Returns(30);
+      var allPlayers = new List<Player> { player };
+      GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(allPlayers);
+      GetMock<ICommandResultBuilder>()
+        .Setup(x => x.Build(player, allPlayers))
+        .Returns(builtCommandResult);
       result = ClassUnderTest.Execute(player.Id);
     }
 
     [Test]
-    public void It_should_populate_all_the_easy_fields()
-    {
-      Assert.Multiple(() =>
-      {
-        Assert.That(result.Id, Is.EqualTo(player.Id));
-        Assert.That(result.X, Is.EqualTo(player.X));
-        Assert.That(result.Y, Is.EqualTo(player.Y));
-        Assert.That(result.IsIt, Is.EqualTo(player.IsIt));
-        Assert.That(result.MapWidth, Is.EqualTo(50));
-        Assert.That(result.MapHeight, Is.EqualTo(30));
-        Assert.That(result.Name, Is.EqualTo(player.Name));
-        Assert.That(result.Players, Is.Not.Null);
-      });
-    }
+    public void It_should_return_the_result_from_the_builder() => Assert.That(result, Is.EqualTo(builtCommandResult));
   }
 
   public class When_executing_look_command_with_invalid_player_id : WithAnAutomocked<LookCommand>
@@ -50,7 +41,7 @@ public class LookCommandTests
       var invalidPlayerId = -1;
       var existingPlayers = new List<Player> { new() { Id = 1 }, new() { Id = 2 } };
       GetMock<IPlayerRepository>().Setup(x => x.GetAllPlayers()).Returns(existingPlayers);
-      
+
       Assert.Throws<NotFoundException>(() => ClassUnderTest.Execute(invalidPlayerId));
     }
   }
