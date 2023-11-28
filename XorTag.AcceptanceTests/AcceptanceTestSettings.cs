@@ -6,5 +6,5 @@ internal class AcceptanceTestSettings
     {
     }
 
-    public string BaseUrl => "http://localhost:10101/";
+    public string BaseUrl => "http://localhost:5007/";
 }
