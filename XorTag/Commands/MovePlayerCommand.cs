@@ -2,16 +2,11 @@ using XorTag.Domain;
 
 namespace XorTag.Commands;
 
-public class MovePlayerCommand
+public class MovePlayerCommand(IPlayerRepository playerRepository, IMapSettings mapSettings, ICommandResultBuilder commandResultBuilder)
 {
-    private readonly IPlayerRepository playerRepository;
-    private readonly IMapSettings mapSettings;
-
-    public MovePlayerCommand(IPlayerRepository playerRepository, IMapSettings mapSettings)
-    {
-        this.playerRepository = playerRepository;
-        this.mapSettings = mapSettings;
-    }
+    private readonly IPlayerRepository playerRepository = playerRepository;
+    private readonly IMapSettings mapSettings = mapSettings;
+    private readonly ICommandResultBuilder commandResultBuilder = commandResultBuilder;
 
     public CommandResult Execute(string direction, int playerId)
     {
@@ -20,16 +15,17 @@ public class MovePlayerCommand
         if (currentPlayer == null) throw new NotFoundException();
         AdjustPlayerPosition(currentPlayer, direction, allPlayers);
         playerRepository.UpdatePlayerPosition(currentPlayer);
-        return new CommandResult
-        {
-            X = currentPlayer.X,
-            Y = currentPlayer.Y,
-            IsIt = currentPlayer.IsIt,
-            Id = playerId,
-            Name = currentPlayer.Name,
-            MapHeight = mapSettings.MapHeight,
-            MapWidth = mapSettings.MapWidth,
-        };
+        // return new CommandResult
+        // {
+        //     X = currentPlayer.X,
+        //     Y = currentPlayer.Y,
+        //     IsIt = currentPlayer.IsIt,
+        //     Id = playerId,
+        //     Name = currentPlayer.Name,
+        //     MapHeight = mapSettings.MapHeight,
+        //     MapWidth = mapSettings.MapWidth,
+        // };
+        return commandResultBuilder.Build(currentPlayer, allPlayers.ToList());
     }
 
     private void AdjustPlayerPosition(Player currentPlayer, string direction, IEnumerable<Player> allPlayers)
