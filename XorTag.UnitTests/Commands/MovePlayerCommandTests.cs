@@ -39,7 +39,7 @@ public class MovePlayerCommandTests
         [TestCase("right", playerStartX + 1, playerStartY)]
         public void It_should_save_and_return_the_new_player_position(string direction, int expectedX, int expectedY)
         {
-            result = ClassUnderTest.Execute(direction, 1234);
+            result = ClassUnderTest.Execute(direction, player.Id);
 
             GetMock<IPlayerRepository>().Verify(x => x.UpdatePlayerPosition(It.Is<Player>(p => p.X == expectedX && p.Y == expectedY)));
 
@@ -49,7 +49,18 @@ public class MovePlayerCommandTests
         }
 
         [Test]
-        public void It_should_update_the_last_active_time() => GetMock<IPlayerRepository>().Verify(x => x.UpdateLastActiveTime(player.Id));
+        public void It_should_update_the_last_active_time()
+        {
+            ClassUnderTest.Execute("up", player.Id);
+            GetMock<IPlayerRepository>().Verify(x => x.UpdateLastActiveTime(player.Id));
+        }
+
+        [Test]
+        public void It_should_check_action_frequency()
+        {
+            ClassUnderTest.Execute("up", player.Id);
+            GetMock<IActionFrequencyChecker>().Verify(x => x.CheckFreqency(player.Id));
+        }
     }
 
     public class When_moving_player_is_it : WithAnAutomocked<MovePlayerCommand>

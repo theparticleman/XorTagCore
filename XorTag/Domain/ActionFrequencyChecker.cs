@@ -1,7 +1,12 @@
 
 namespace XorTag.Domain;
 
-public class ActionFrequencyChecker(ISettings settings)
+public interface IActionFrequencyChecker
+{
+  void CheckFreqency(int playerId);
+}
+
+public class ActionFrequencyChecker(ISettings settings) : IActionFrequencyChecker
 {
   private readonly Dictionary<int, DateTimeOffset> lastActionTimeLookup = [];
   private readonly ISettings settings = settings;
@@ -10,10 +15,7 @@ public class ActionFrequencyChecker(ISettings settings)
   {
     if (lastActionTimeLookup.TryGetValue(playerId, out var lastActionTime))
     {
-      Console.WriteLine("lastActionTime: " + lastActionTime);
-      TimeSpan difference = DateTimeOffset.Now - lastActionTime;
-      Console.WriteLine("difference: " + difference.TotalMilliseconds + "ms");
-      if (difference.TotalMilliseconds <= settings.MaxActionFrequencyMilliseconds)
+      if ((DateTimeOffset.Now - lastActionTime).TotalMilliseconds <= settings.MaxActionFrequencyMilliseconds)
       {
         throw new TooFrequentActionException();
       }

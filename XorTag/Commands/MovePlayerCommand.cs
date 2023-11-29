@@ -2,17 +2,23 @@ using XorTag.Domain;
 
 namespace XorTag.Commands;
 
-public class MovePlayerCommand(IPlayerRepository playerRepository, ISettings settings, ICommandResultBuilder commandResultBuilder)
+public class MovePlayerCommand(
+    IPlayerRepository playerRepository,
+    ISettings settings,
+    ICommandResultBuilder commandResultBuilder,
+    IActionFrequencyChecker actionFrequencyChecker)
 {
     private readonly IPlayerRepository playerRepository = playerRepository;
     private readonly ISettings settings = settings;
     private readonly ICommandResultBuilder commandResultBuilder = commandResultBuilder;
+    private readonly IActionFrequencyChecker actionFrequencyChecker = actionFrequencyChecker;
 
     public CommandResult Execute(string direction, int playerId)
     {
         var allPlayers = playerRepository.GetAllPlayers();
         var currentPlayer = allPlayers.SingleOrDefault(x => x.Id == playerId);
         if (currentPlayer == null) throw new NotFoundException();
+        actionFrequencyChecker.CheckFreqency(currentPlayer.Id);
         AdjustPlayerPosition(currentPlayer, direction, allPlayers);
         playerRepository.UpdatePlayerPosition(currentPlayer);
         playerRepository.UpdateLastActiveTime(currentPlayer.Id);

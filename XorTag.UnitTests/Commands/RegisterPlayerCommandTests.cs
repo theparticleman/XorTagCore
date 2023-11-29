@@ -1,4 +1,5 @@
 using XorTag.Commands;
+using XorTag.Domain;
 
 namespace XorTag.UnitTests.Commands;
 
@@ -81,6 +82,9 @@ public class RegisterPlayerCommandTests
 
         [Test]
         public void It_should_update_last_active_time() => GetMock<IPlayerRepository>().Verify(x => x.UpdateLastActiveTime(generatedId));
+
+        [Test]
+        public void It_should_check_last_action_time() => GetMock<IActionFrequencyChecker>().Verify(x => x.CheckFreqency(generatedId));
     }
 
     public class When_registering_multiple_players
@@ -97,8 +101,11 @@ public class RegisterPlayerCommandTests
             var randomMock = new Mock<IRandom>();
             var playerRepository = new InMemoryPlayerRepository();
             var commandResultBuilder = new CommandResultBuilder(settingsMock.Object);
+            var actionFrequencyCheckerMock = new Mock<IActionFrequencyChecker>();
 
-            var classUnderTest = new RegisterPlayerCommand(idGeneratorMock.Object, nameGeneratorMock.Object, settingsMock.Object, randomMock.Object, playerRepository, commandResultBuilder);
+            var classUnderTest = new RegisterPlayerCommand(
+                idGeneratorMock.Object, nameGeneratorMock.Object, settingsMock.Object, 
+                randomMock.Object, playerRepository, commandResultBuilder, actionFrequencyCheckerMock.Object);
 
             firstResult = classUnderTest.Execute();
             secondResult = classUnderTest.Execute();

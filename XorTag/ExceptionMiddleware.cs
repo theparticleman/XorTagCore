@@ -17,7 +17,13 @@ public class ExceptionMiddleware : IMiddleware
             context.Response.StatusCode = 404;
             await context.Response.Body.WriteAsync(Encoding.UTF8.GetBytes("Resource not found"));
         }
-        catch(Exception ex)
+        catch (TooFrequentActionException)
+        {
+            Console.WriteLine("Too frequent request");
+            context.Response.StatusCode = 429;
+            await context.Response.Body.WriteAsync(Encoding.UTF8.GetBytes("Too frequent requests for player"));
+        }
+        catch (Exception ex)
         {
             Console.WriteLine("An unexpected exeption was thrown");
             Console.WriteLine(ex);

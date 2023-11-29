@@ -12,6 +12,7 @@ builder.Services
 builder.Services.AddSingleton<IPlayerRepository, InMemoryPlayerRepository>();
 builder.Services.AddSingleton<IIdGenerator, IdGenerator>();
 builder.Services.AddSingleton<INameGenerator, NameGenerator>();
+builder.Services.AddSingleton<IActionFrequencyChecker, ActionFrequencyChecker>();
 builder.Services.AddHostedService<PlayerInactivityChecker>();
 
 builder.Services.AddOutputCache();

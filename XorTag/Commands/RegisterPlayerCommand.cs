@@ -8,7 +8,8 @@ public class RegisterPlayerCommand(
     ISettings settings,
     IRandom random,
     IPlayerRepository playerRepository,
-    ICommandResultBuilder commandResultBuilder)
+    ICommandResultBuilder commandResultBuilder,
+    IActionFrequencyChecker actionFrequencyChecker)
 {
     private readonly IIdGenerator idGenerator = idGenerator;
     private readonly INameGenerator nameGenerator = nameGenerator;
@@ -16,6 +17,7 @@ public class RegisterPlayerCommand(
     private readonly IRandom random = random;
     private readonly IPlayerRepository playerRepository = playerRepository;
     private readonly ICommandResultBuilder commandResultBuilder = commandResultBuilder;
+    private readonly IActionFrequencyChecker actionFrequencyChecker = actionFrequencyChecker;
 
     public CommandResult Execute()
     {
@@ -30,6 +32,7 @@ public class RegisterPlayerCommand(
         };
         playerRepository.Save(player);
         playerRepository.UpdateLastActiveTime(player.Id);
+        actionFrequencyChecker.CheckFreqency(player.Id);
         return commandResultBuilder.Build(player, existingPlayers);
     }
 }

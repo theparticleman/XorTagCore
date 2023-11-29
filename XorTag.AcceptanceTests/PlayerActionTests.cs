@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace XorTag.AcceptanceTests;
 
 public class PlayerActionTests
@@ -66,6 +68,7 @@ public class PlayerActionTests
             {
                 registerResponse = client.Execute<ApiResponse>(new RestRequest("register"));
             } while (registerResponse.Data.Y <= 0);
+            Thread.Sleep(1000);
             moveReponse = client.Execute<ApiResponse>(new RestRequest("/moveup/" + registerResponse.Data.Id));
         }
 
@@ -101,6 +104,7 @@ public class PlayerActionTests
             var settings = new AcceptanceTestSettings();
             var client = new RestClient(settings.BaseUrl);
             var registerResponse = client.Execute<ApiResponse>(new RestRequest("register"));
+            Thread.Sleep(1000);
 
             var moveReponse = client.Execute<ApiResponse>(new RestRequest("/moveinvalid/" + registerResponse.Data.Id));
 
@@ -120,6 +124,7 @@ public class PlayerActionTests
             var client = new RestClient(settings.BaseUrl);
             registerResponse = client.Execute<ApiResponse>(new RestRequest("register"));
             Assert.That(registerResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            Thread.Sleep(1000);
             lookResponse = client.Execute<ApiResponse>(new RestRequest("/look/" + registerResponse.Data.Id));
         }
 
