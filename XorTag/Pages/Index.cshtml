@@ -104,7 +104,7 @@ Here is what the different fields on that JSON object mean:
 <p>As with moving, make sure to supply your user id. Also, in response to your request you'll receive back an updated JSON object.</p>
 
 <h3>Not So Fast There</h3>
-<p>To make sure the server doesn't explode as players submit requests as fast as possible, each player can perform an action at most once per second. Moving and looking both count as actions. Registering does not count as an action. Any actions performed more frequently than <b>once per second</b> will be ignored. In this case an error (specifically a 503 error) will be returned instead of a JSON object. So your code will either need to not make requests too often or handle those errors.</p>
+<p>To make sure the server doesn't explode as players submit requests as fast as possible, each player can perform an action at most once per second. Moving and looking both count as actions. Registering does not count as an action. Any actions performed more frequently than <b>once per second</b> will be ignored. In this case an error (specifically a 429 error) will be returned instead of a JSON object. So your code will either need to not make requests too often or handle those errors.</p>
 <p>Also, if your player is totally inactive for 5 minutes it will be removed from the game.</p>
 
 <h3>Sample Code</h3>
