@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using XorTag.Domain;
 
 namespace XorTag.Controllers;
@@ -16,9 +17,10 @@ public class MapController : ControllerBase
     }
 
     [Route("/map")]
-    [ResponseCache(Duration = 1)]
+    [OutputCache(Duration = 1, VaryByQueryKeys = [])]
     public IActionResult Get()
     {
+        logger.LogInformation("Building new map " + DateTime.Now);
         return File(mapImageBuilder.BuildImage(), "image/png");
     }
 }

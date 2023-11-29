@@ -14,6 +14,8 @@ builder.Services.AddSingleton<IIdGenerator, IdGenerator>();
 builder.Services.AddSingleton<INameGenerator, NameGenerator>();
 builder.Services.AddHostedService<PlayerInactivityChecker>();
 
+builder.Services.AddOutputCache();
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddControllers();
@@ -30,6 +32,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseOutputCache();
 
 app.MapControllers();
 app.MapRazorPages();
