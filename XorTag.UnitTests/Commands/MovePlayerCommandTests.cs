@@ -47,6 +47,9 @@ public class MovePlayerCommandTests
             Assert.That(capturedPlayer.Y, Is.EqualTo(expectedY));
             Assert.That(result, Is.EqualTo(builtCommandResult));
         }
+
+        [Test]
+        public void It_should_update_the_last_active_time() => GetMock<IPlayerRepository>().Verify(x => x.UpdateLastActiveTime(player.Id));
     }
 
     public class When_moving_player_is_it : WithAnAutomocked<MovePlayerCommand>

@@ -29,6 +29,7 @@ public class RegisterPlayerCommand(
             IsIt = existingPlayers.Count() == 0,
         };
         playerRepository.Save(player);
+        playerRepository.UpdateLastActiveTime(player.Id);
         return commandResultBuilder.Build(player, existingPlayers);
     }
 }

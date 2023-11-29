@@ -78,6 +78,9 @@ public class RegisterPlayerCommandTests
             var existingPlayerNames = existingPlayers.Select(x => x.Name);
             Assert.That(capturedNameList, Is.EquivalentTo(existingPlayerNames));
         }
+
+        [Test]
+        public void It_should_update_last_active_time() => GetMock<IPlayerRepository>().Verify(x => x.UpdateLastActiveTime(generatedId));
     }
 
     public class When_registering_multiple_players

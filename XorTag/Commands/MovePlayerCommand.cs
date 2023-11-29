@@ -15,6 +15,7 @@ public class MovePlayerCommand(IPlayerRepository playerRepository, ISettings set
         if (currentPlayer == null) throw new NotFoundException();
         AdjustPlayerPosition(currentPlayer, direction, allPlayers);
         playerRepository.UpdatePlayerPosition(currentPlayer);
+        playerRepository.UpdateLastActiveTime(currentPlayer.Id);
         return commandResultBuilder.Build(currentPlayer, allPlayers);
     }
 

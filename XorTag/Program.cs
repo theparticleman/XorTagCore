@@ -12,6 +12,7 @@ builder.Services
 builder.Services.AddSingleton<IPlayerRepository, InMemoryPlayerRepository>();
 builder.Services.AddSingleton<IIdGenerator, IdGenerator>();
 builder.Services.AddSingleton<INameGenerator, NameGenerator>();
+builder.Services.AddHostedService<PlayerInactivityChecker>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();

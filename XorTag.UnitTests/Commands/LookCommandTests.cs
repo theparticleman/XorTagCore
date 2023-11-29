@@ -30,6 +30,9 @@ public class LookCommandTests
 
     [Test]
     public void It_should_return_the_result_from_the_builder() => Assert.That(result, Is.EqualTo(builtCommandResult));
+
+    [Test]
+    public void It_should_update_last_active_time() => GetMock<IPlayerRepository>().Verify(x => x.UpdateLastActiveTime(player.Id));
   }
 
   public class When_executing_look_command_with_invalid_player_id : WithAnAutomocked<LookCommand>

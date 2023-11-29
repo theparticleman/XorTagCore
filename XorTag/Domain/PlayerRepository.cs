@@ -9,6 +9,9 @@ public interface IPlayerRepository
     void Save(Player player);
     int GetPlayerCount();
     void ClearAllPlayers();
+    DateTimeOffset GetLastActiveTime(int playerId);
+    void RemovePlayer(int playerId);
+    void UpdateLastActiveTime(int playerId);
 }
 
 public class InMemoryPlayerRepository : IPlayerRepository
