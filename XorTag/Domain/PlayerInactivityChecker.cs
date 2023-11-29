@@ -1,10 +1,15 @@
 namespace XorTag.Domain;
 
-public class PlayerInactivityChecker(IPlayerRepository playerRepository, ISettings settings, ILogger<PlayerInactivityChecker> logger) : IHostedService
+public class PlayerInactivityChecker(
+  IPlayerRepository playerRepository,
+  ISettings settings,
+  ILogger<PlayerInactivityChecker> logger,
+  IRandom random) : IHostedService
 {
   private readonly IPlayerRepository playerRepository = playerRepository;
   private readonly ISettings settings = settings;
   private readonly ILogger logger = logger;
+  private readonly IRandom random = random;
   private bool running = false;
   private Task task;
 
@@ -31,10 +36,17 @@ public class PlayerInactivityChecker(IPlayerRepository playerRepository, ISettin
         {
           logger.LogInformation($"Removing player id {player.Id}");
           playerRepository.RemovePlayer(player.Id);
+          if (player.IsIt) PickNewIsItPlayer();
         }
       }
       Thread.Sleep(10);
     }
+  }
+
+  private void PickNewIsItPlayer()
+  {
+    var randomPlayer = playerRepository.GetAllPlayers().OrderBy(x => random.Next(1000)).FirstOrDefault();
+    if (randomPlayer != null) playerRepository.SavePlayerAsIt(randomPlayer.Id);
   }
 
   public Task StopAsync(CancellationToken cancellationToken)
