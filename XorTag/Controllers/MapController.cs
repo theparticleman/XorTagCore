@@ -20,7 +20,6 @@ public class MapController : ControllerBase
     [OutputCache(Duration = 1, VaryByQueryKeys = [])]
     public IActionResult Get()
     {
-        logger.LogInformation("Building new map " + DateTime.Now);
         return File(mapImageBuilder.BuildImage(), "image/png");
     }
 }
