@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using XorTag.Commands;
 
 namespace XorTag.Controllers;
@@ -14,6 +15,7 @@ public class StatsController: ControllerBase
     }
 
     [Route("/stats")]
+    [OutputCache(Duration = 1, VaryByQueryKeys = [])]
     public StatsResult Get()
     {
         return statsCommand.Execute();
