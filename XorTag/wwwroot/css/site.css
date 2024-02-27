@@ -24,8 +24,8 @@ html {
 }
 
 .nav-link a:link, a:visited {
-  color: purple;
-  text-decoration: none;
+  color: white;
+  text-decoration: underline;
 }
 
 .nav-link a:hover {
