@@ -11,7 +11,7 @@ public class PlayerInactivityCheckerTests
   {
     var loggerMock = new Mock<ILogger<PlayerInactivityChecker>>();
     var settingsMock = new Mock<ISettings>();
-    settingsMock.Setup(x => x.InactivityTimeoutMilliseconds).Returns(10);
+    settingsMock.Setup(x => x.InactivityTimeoutMilliseconds).Returns(1);
 
     var playerRepository = new InMemoryPlayerRepository();
     var classUnderTest = new PlayerInactivityChecker(playerRepository, settingsMock.Object, loggerMock.Object, new Random());

@@ -10,9 +10,9 @@ public class ActionFrequencyCheckerTests
     public void It_should_throw_an_exception()
     {
       var playerId = 42;
-      GetMock<ISettings>().Setup(x => x.MaxActionFrequencyMilliseconds).Returns(10);
+      GetMock<ISettings>().Setup(x => x.MaxActionFrequencyMilliseconds).Returns(100);
       ClassUnderTest.CheckFreqency(playerId);
-      Thread.Sleep(5);
+      Thread.Sleep(1);
       Assert.Throws<TooFrequentActionException>(() => ClassUnderTest.CheckFreqency(playerId));
     }
   }
