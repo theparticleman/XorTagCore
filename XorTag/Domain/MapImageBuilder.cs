@@ -1,4 +1,5 @@
 using ImageMagick;
+using ImageMagick.Drawing;
 
 namespace XorTag.Domain;
 
