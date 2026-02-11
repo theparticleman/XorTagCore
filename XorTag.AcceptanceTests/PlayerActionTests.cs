@@ -1,131 +1,144 @@
-using System.Threading;
-
 namespace XorTag.AcceptanceTests;
 
 public class PlayerActionTests
 {
     public class When_registering_a_new_player
     {
-        private IRestResponse<ApiResponse> response;
+        private HttpResponseMessage response;
+        private ApiResponse responseData;
 
         [OneTimeSetUp]
-        public void SetUp()
+        public async Task SetUp()
         {
-            var settings = new AcceptanceTestSettings();
-            var client = new RestClient(settings.BaseUrl);
-            var request = new RestRequest("register");
+            var factory = TestHelpers.CreateTestFactory();
+            var client = factory.CreateClient();
 
-            response = client.Execute<ApiResponse>(request);
+            response = await client.GetAsync("/register");
+            responseData = await response.Content.ReadFromJsonAsync<ApiResponse>();
         }
 
         [Test]
         public void It_should_succeed() => Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
         [Test]
-        public void It_should_assign_a_name() => Assert.That(response.Data.Name, Is.Not.Empty);
+        public void It_should_assign_a_name() => Assert.That(responseData.Name, Is.Not.Empty);
 
         [Test]
-        public void It_should_assign_an_id() => Assert.That(response.Data.Id, Is.GreaterThan(0));
+        public void It_should_assign_an_id() => Assert.That(responseData.Id, Is.GreaterThan(0));
     }
 
     public class When_registering_multiple_players
     {
-        private IRestResponse<ApiResponse> firstRegistrationResponse;
-        private IRestResponse<ApiResponse> secondRegistrationResponse;
+        private ApiResponse firstRegistrationResponse;
+        private ApiResponse secondRegistrationResponse;
 
         [OneTimeSetUp]
-        public void SetUp()
+        public async Task SetUp()
         {
-            var settings = new AcceptanceTestSettings();
-            var client = new RestClient(settings.BaseUrl);
+            var factory = TestHelpers.CreateTestFactory();
+            var client = factory.CreateClient();
 
-            var clearResponse = client.Execute(new RestRequest("admin/clearall"));
+            var clearResponse = await client.GetAsync("/admin/clearall");
             Assert.That(clearResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
-            firstRegistrationResponse = client.Execute<ApiResponse>(new RestRequest("register"));
-            secondRegistrationResponse = client.Execute<ApiResponse>(new RestRequest("register"));
+            var firstResponse = await client.GetAsync("/register");
+            firstRegistrationResponse = await firstResponse.Content.ReadFromJsonAsync<ApiResponse>();
+
+            var secondResponse = await client.GetAsync("/register");
+            secondRegistrationResponse = await secondResponse.Content.ReadFromJsonAsync<ApiResponse>();
         }
 
         [Test]
-        public void It_should_set_first_player_as_it() => Assert.That(firstRegistrationResponse.Data.IsIt, Is.True);
+        public void It_should_set_first_player_as_it() => Assert.That(firstRegistrationResponse.IsIt, Is.True);
 
         [Test]
-        public void It_should_set_second_player_as_NOT_it() => Assert.That(secondRegistrationResponse.Data.IsIt, Is.False);
+        public void It_should_set_second_player_as_NOT_it() => Assert.That(secondRegistrationResponse.IsIt, Is.False);
     }
 
     public class When_moving_a_player
     {
-        private IRestResponse<ApiResponse> registerResponse;
-        private IRestResponse<ApiResponse> moveReponse;
+        private ApiResponse registerResponse;
+        private HttpResponseMessage moveResponse;
+        private ApiResponse moveResponseData;
 
         [OneTimeSetUp]
-        public void SetUp()
+        public async Task SetUp()
         {
-            var settings = new AcceptanceTestSettings();
-            var client = new RestClient(settings.BaseUrl);
+            var factory = TestHelpers.CreateTestFactory();
+            var client = factory.CreateClient();
 
-            do //make sure that the player we've registered isn't at the top of the map
+            do
             {
-                registerResponse = client.Execute<ApiResponse>(new RestRequest("register"));
-            } while (registerResponse.Data.Y <= 0);
-            Thread.Sleep(1000);
-            moveReponse = client.Execute<ApiResponse>(new RestRequest("/moveup/" + registerResponse.Data.Id));
+                var response = await client.GetAsync("/register");
+                registerResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
+            } while (registerResponse.Y <= 0);
+
+            await Task.Delay(1000);
+            moveResponse = await client.GetAsync("/moveup/" + registerResponse.Id);
+            moveResponseData = await moveResponse.Content.ReadFromJsonAsync<ApiResponse>();
         }
 
         [Test]
-        public void It_should_succeed() => Assert.That(moveReponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+        public void It_should_succeed() => Assert.That(moveResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
 
         [Test]
-        public void It_should_not_use_a_player_at_the_top_of_the_map() => Assert.That(registerResponse.Data.Y, Is.GreaterThan(0));
+        public void It_should_not_use_a_player_at_the_top_of_the_map() => Assert.That(registerResponse.Y, Is.GreaterThan(0));
 
         [Test]
-        public void It_should_move_the_player_up() => Assert.That(moveReponse.Data.Y, Is.EqualTo(registerResponse.Data.Y - 1));
+        public void It_should_move_the_player_up() => Assert.That(moveResponseData.Y, Is.EqualTo(registerResponse.Y - 1));
     }
 
     public class When_moving_player_with_invalid_id
     {
         [Test]
-        public void It_should_result_in_404()
+        public async Task It_should_result_in_404()
         {
-            var settings = new AcceptanceTestSettings();
-            var client = new RestClient(settings.BaseUrl);
+            var factory = TestHelpers.CreateTestFactory();
+            var client = factory.CreateClient();
 
-            var moveReponse = client.Execute<ApiResponse>(new RestRequest("/moveup/" + 9999));
+            var moveResponse = await client.GetAsync("/moveup/9999");
 
-            Assert.That(moveReponse.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.That(moveResponse.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
     }
 
     public class When_moving_player_in_invalid_direction
     {
         [Test]
-        public void It_should_result_in_404()
+        public async Task It_should_result_in_404()
         {
-            var settings = new AcceptanceTestSettings();
-            var client = new RestClient(settings.BaseUrl);
-            var registerResponse = client.Execute<ApiResponse>(new RestRequest("register"));
-            Thread.Sleep(1000);
+            var factory = TestHelpers.CreateTestFactory();
+            var client = factory.CreateClient();
 
-            var moveReponse = client.Execute<ApiResponse>(new RestRequest("/moveinvalid/" + registerResponse.Data.Id));
+            var response = await client.GetAsync("/register");
+            var registerResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
+            await Task.Delay(1000);
 
-            Assert.That(moveReponse.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            var moveResponse = await client.GetAsync("/moveinvalid/" + registerResponse.Id);
+
+            Assert.That(moveResponse.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
     }
 
     public class When_having_a_player_look
     {
-        private IRestResponse<ApiResponse> registerResponse;
-        private IRestResponse<ApiResponse> lookResponse;
+        private ApiResponse registerResponse;
+        private HttpResponseMessage lookResponse;
+        private ApiResponse lookResponseData;
 
         [OneTimeSetUp]
-        public void SetUp()
+        public async Task SetUp()
         {
-            var settings = new AcceptanceTestSettings();
-            var client = new RestClient(settings.BaseUrl);
-            registerResponse = client.Execute<ApiResponse>(new RestRequest("register"));
-            Assert.That(registerResponse.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-            Thread.Sleep(1000);
-            lookResponse = client.Execute<ApiResponse>(new RestRequest("/look/" + registerResponse.Data.Id));
+            var factory = TestHelpers.CreateTestFactory();
+            var client = factory.CreateClient();
+
+            var response = await client.GetAsync("/register");
+            registerResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+            await Task.Delay(1000);
+            lookResponse = await client.GetAsync("/look/" + registerResponse.Id);
+            lookResponseData = await lookResponse.Content.ReadFromJsonAsync<ApiResponse>();
         }
 
         [Test]
@@ -134,9 +147,8 @@ public class PlayerActionTests
         [Test]
         public void It_should_not_move_the_player()
         {
-            Assert.That(registerResponse.Data.X, Is.EqualTo(lookResponse.Data.X));
-            Assert.That(registerResponse.Data.Y, Is.EqualTo(lookResponse.Data.Y));
+            Assert.That(registerResponse.X, Is.EqualTo(lookResponseData.X));
+            Assert.That(registerResponse.Y, Is.EqualTo(lookResponseData.Y));
         }
     }
-
 }

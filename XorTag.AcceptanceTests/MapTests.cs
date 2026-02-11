@@ -6,17 +6,17 @@ public class MapTests
 {
     public class When_getting_map
     {
-        private IRestResponse mapResponse;
+        private HttpResponseMessage mapResponse;
         private MagickImage parsedImage;
 
         [OneTimeSetUp]
-        public void SetUp()
+        public async Task SetUp()
         {
-            var settings = new AcceptanceTestSettings();
-            var client = new RestClient(settings.BaseUrl);
+            var factory = TestHelpers.CreateTestFactory();
+            var client = factory.CreateClient();
 
-            mapResponse = client.Execute(new RestRequest("map"));
-            var data = client.DownloadData(new RestRequest("map"));
+            mapResponse = await client.GetAsync("/map");
+            var data = await client.GetByteArrayAsync("/map");
             parsedImage = new MagickImage(data);
         }
 

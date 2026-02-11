@@ -2,19 +2,23 @@ namespace XorTag.AcceptanceTests;
 
 public class When_one_player_is_registered
 {
-    private IRestResponse<ApiResponse> registerResponse;
-    private IRestResponse<StatsResponse> statsResponse;
+    private ApiResponse registerResponse;
+    private HttpResponseMessage statsResponse;
+    private StatsResponse statsResponseData;
 
     [OneTimeSetUp]
-    public void SetUp()
+    public async Task SetUp()
     {
-        var settings = new AcceptanceTestSettings();
-        var client = new RestClient(settings.BaseUrl);
+        var factory = TestHelpers.CreateTestFactory();
+        var client = factory.CreateClient();
 
-        client.Execute(new RestRequest("admin/clearall"));
-        registerResponse = client.Execute<ApiResponse>(new RestRequest("register"));
+        await client.GetAsync("/admin/clearall");
 
-        statsResponse = client.Execute<StatsResponse>(new RestRequest("stats"));
+        var response = await client.GetAsync("/register");
+        registerResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
+
+        statsResponse = await client.GetAsync("/stats");
+        statsResponseData = await statsResponse.Content.ReadFromJsonAsync<StatsResponse>();
     }
 
     [Test]
@@ -22,8 +26,8 @@ public class When_one_player_is_registered
 
     [Test]
     public void It_should_return_is_it_player_name()
-        => Assert.That(statsResponse.Data.IsItPlayerName, Is.EqualTo(registerResponse.Data.Name));
+        => Assert.That(statsResponseData.IsItPlayerName, Is.EqualTo(registerResponse.Name));
 
     [Test]
-    public void It_should_leave_winning_player_name_null() => Assert.That(statsResponse.Data.WinningPlayerName, Is.Null);
+    public void It_should_leave_winning_player_name_null() => Assert.That(statsResponseData.WinningPlayerName, Is.Null);
 }
