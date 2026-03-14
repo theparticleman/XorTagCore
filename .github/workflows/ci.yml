@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Run unit tests
+        run: dotnet test XorTag.UnitTests --no-build --verbosity normal
+
+      - name: Run acceptance tests
+        run: dotnet test XorTag.AcceptanceTests --no-build --verbosity normal
+
+      - name: Start application
+        run: |
+          dotnet run --project XorTag --no-build &
+          sleep 10
+
+      - name: Test /map endpoint
+        run: |
+          HTTP_STATUS=$(curl -s -o /tmp/map.png -w "%{http_code}" http://localhost:5007/map)
+          CONTENT_TYPE=$(curl -s -I http://localhost:5007/map | grep -i content-type | tr -d '\r')
+
+          echo "HTTP Status: $HTTP_STATUS"
+          echo "Content-Type: $CONTENT_TYPE"
+
+          if [ "$HTTP_STATUS" != "200" ]; then
+            echo "Expected HTTP 200, got $HTTP_STATUS"
+            exit 1
+          fi
+
+          if [[ "$CONTENT_TYPE" != *"image/png"* ]]; then
+            echo "Expected Content-Type image/png, got $CONTENT_TYPE"
+            exit 1
+          fi
+
+          file /tmp/map.png
+          echo "Map endpoint verification passed"
