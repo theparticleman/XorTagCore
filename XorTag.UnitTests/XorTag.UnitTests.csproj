@@ -10,7 +10,7 @@
     <PackageReference Include="AutoMoqCore" Version="2.1.0" />
     <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="14.10.4" />
     <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="nunit" Version="3.14.0" />
+    <PackageReference Include="nunit" Version="4.5.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.2" />
   </ItemGroup>
